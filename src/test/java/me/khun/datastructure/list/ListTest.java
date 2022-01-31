@@ -215,6 +215,7 @@ public class ListTest {
         List<Integer> list = newList(Integer.class);
         list.addAll(l1);
 
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.add(list.size() + 1, 10));
         Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.addAll(list.size() + 1, newList(Integer.class)));
         Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.get(-1));
         Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.get(10));

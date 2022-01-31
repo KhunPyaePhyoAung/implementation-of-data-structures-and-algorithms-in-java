@@ -43,7 +43,7 @@ public class ArrayList<E> implements List<E> {
     public void add(int index, E element) {
 
         if (index < 0 || index > size)
-            throw new IllegalArgumentException("Index out of bounds : " + index);
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
         var newSize = size + 1;
 
