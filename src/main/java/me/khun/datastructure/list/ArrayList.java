@@ -157,7 +157,7 @@ public class ArrayList<E> implements List<E> {
         return index != -1;
     }
 
-    //Time Complexity : O(nm), m = size of c
+    //Time Complexity : O(n^2)
     @Override
     public boolean removeAll(Collection<?> c) {
 
