@@ -331,12 +331,12 @@ public class ArrayList<E> implements List<E> {
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
 
-        if (fromIndex < 0 || fromIndex >= size)
-            throw new IndexOutOfBoundsException("Index out of bounds : " + fromIndex);
-        if (toIndex < 0 || toIndex > size)
-            throw new IndexOutOfBoundsException("Index out of bounds : " + toIndex);
         if (fromIndex > toIndex)
             throw new IllegalArgumentException("FromIndex cannot be greater than ToIndex");
+        if (fromIndex < 0)
+            throw new IndexOutOfBoundsException("FromIndex out of bounds : " + fromIndex);
+        if (toIndex > size)
+            throw new IndexOutOfBoundsException("ToIndex out of bounds : " + toIndex);
 
         var list = new ArrayList<E>(toIndex - fromIndex);
 
