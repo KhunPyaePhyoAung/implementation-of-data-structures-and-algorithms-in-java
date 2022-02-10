@@ -178,16 +178,19 @@ public class ArrayList<E> implements List<E> {
     @Override
     public boolean retainAll(Collection<?> c) {
 
-        if (c == this || isEmpty())
-            return false;
+        var sizeBefore = size;
+
         if (c.isEmpty()) {
             clear();
-            return true;
+            return sizeBefore != size;
         }
+
+        if (c == this || isEmpty())
+            return false;
+
 
         var retainedContainer = new Object[capacity];
         var retainedCount = 0;
-        var sizeBefore = size;
 
         for (E e: container)
             for (E o : (Collection<? extends E>)c)
