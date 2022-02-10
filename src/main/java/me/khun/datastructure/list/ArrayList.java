@@ -161,20 +161,17 @@ public class ArrayList<E> implements List<E> {
     @Override
     public boolean removeAll(Collection<?> c) {
 
-        if (c.isEmpty())
+        if (c.isEmpty() || isEmpty())
             return false;
 
-        for (Object o : c) {
+        var sizeBefore = size;
 
-            if (isEmpty())
-                break;
-
+        for (Object o : c)
             for (int i = 0; i < size; i++)
                 if (Objects.equals(o, container[i]))
                     remove(i--);
-        }
 
-        return true;
+        return sizeBefore != size;
     }
 
     //Time Complexity : O(nm), m = size of c
