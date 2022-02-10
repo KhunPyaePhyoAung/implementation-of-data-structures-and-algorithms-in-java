@@ -27,6 +27,6 @@ public class ArrayListTest {
         List<Integer> list3 = new ArrayList<>(list1);
         list3.addAll(list2);
 
-        Assert.assertEquals("Size=11:[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", list3.toString());
+        Assert.assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", list3.toString());
     }
 }
