@@ -140,7 +140,7 @@ public class ArrayList<E> implements List<E> {
 
         E value = get(index);
 
-        System.arraycopy(container, index + 1, container, index, size - index);
+        System.arraycopy(container, index + 1, container, index, size - index - 1);
 
         container[--size] = null;
         modificationCount++;
