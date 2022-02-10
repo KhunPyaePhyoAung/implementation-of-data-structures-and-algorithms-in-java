@@ -348,8 +348,8 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public String toString() {
-        var sb = new StringBuilder("Size="+size);
-        sb.append(":[");
+        var sb = new StringBuilder();
+        sb.append("[");
         for (int i = 0; i < size; i++) {
             if (i != 0)
                 sb.append(", ");
