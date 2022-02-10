@@ -1,308 +1,546 @@
 package me.khun.datastructure.list;
 
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import static org.junit.Assert.*;
 
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class ListTest {
 
-    private List<Integer> l1;
-    private List<Integer> l2;
-    private List<Integer> l3;
-    private List<Integer> l4;
-    private List<Integer> l5;
-
-    @Before
-    public void init() {
-        l1 = newList(Integer.class);
-        l1.add(-5);
-        l1.add(-4);
-        l1.add(-3);
-        l1.add(-2);
-        l1.add(-1);
-
-        l2 = newList(Integer.class);
-        l2.add(0);
-        l2.add(1);
-        l2.add(2);
-        l2.add(3);
-        l2.add(4);
-
-        l3 = newList(Integer.class);
-        l3.add(5);
-        l3.add(6);
-        l3.add(7);
-        l3.add(8);
-        l3.add(9);
-        l3.add(10);
-
-        l4 = newList(Integer.class);
-        l4.add(11);
-        l4.add(12);
-        l4.add(13);
-        l4.add(14);
-        l4.add(15);
-
-        l5 = newList(Integer.class);
-        l5.add(-5);
-        l5.add(-2);
-        l5.add(0);
-        l5.add(2);
-        l5.add(4);
-    }
-
     @Test
-    public void test1() {
-
-        List<Integer> list = newList(Integer.class);
-        list.addAll(l2);
-
-        Assert.assertEquals("Size=5:[0, 1, 2, 3, 4]", list.toString());
-
-        list.addAll(0, l1);
-
-        Assert.assertEquals("Size=10:[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4]", list.toString());
-
-        list.addAll(list.size(), l4);
-
-        Assert.assertEquals("Size=15:[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 11, 12, 13, 14, 15]", list.toString());
-
-        list.addAll(10, l3);
-        Assert.assertEquals("Size=21:[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]", list.toString());
-
-        list.add(16);
-        list.add(list.size(), 17);
-        list.add(0, -7);
-        list.add(1, -6);
-
-        Assert.assertEquals("Size=25:[-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]", list.toString());
-    }
-
-    @Test
-    public void test2() {
-        List<Integer> list = newList(Integer.class);
-        list.addAll(l1);
-        list.addAll(l2);
-        list.addAll(l2);
-        list.addAll(l1);
-
-        Assert.assertEquals("Size=20:[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, -5, -4, -3, -2, -1]", list.toString());
-        Assert.assertEquals(5, list.indexOf(0));
-        Assert.assertEquals(10, list.lastIndexOf(0));
-        Assert.assertEquals(-1, list.indexOf(6));
-        Assert.assertEquals(-1, list.lastIndexOf(6));
-        Assert.assertEquals(6, list.indexOf(1));
-        Assert.assertEquals(11, list.lastIndexOf(1));
-        Assert.assertEquals(-1, list.indexOf(10));
-        Assert.assertEquals(-1, list.lastIndexOf(10));
-    }
-
-    @Test
-    public void test3() {
+    public void testAddMethods() {
         List<Integer> list1 = newList(Integer.class);
-        list1.addAll(l2);
-        list1.addAll(l3);
-        list1.addAll(l4);
-
-        Assert.assertEquals("Size=16:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]", list1.toString());
-
-        Integer i1 = list1.remove(1);
-        Integer i2 = list1.remove(0);
-        Integer i3 = list1.remove(list1.size() - 1);
-
-
-        Assert.assertEquals(Integer.valueOf(1), i1);
-        Assert.assertEquals(Integer.valueOf(0), i2);
-        Assert.assertEquals(Integer.valueOf(15), i3);
-        Assert.assertEquals("Size=13:[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]", list1.toString());
-
-        Assert.assertTrue(list1.remove(Integer.valueOf(9)));
-        Assert.assertFalse(list1.remove(Integer.valueOf(100)));
-        Assert.assertEquals("Size=12:[2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14]", list1.toString());
-
-        Assert.assertFalse(list1.removeAll(newList(Integer.class)));
+        list1.add(1);
         list1.add(2);
+        list1.add(0, 0);
+        list1.add(3, 4);
+        list1.add(3, 3);
+
+        assertEquals("[0, 1, 2, 3, 4]", list1.toString());
+
+        List<Integer> list2 = newList(Integer.class);
+        list2.add(0, -3);
+        list2.add(1, -2);
+        list2.add(-1);
+        list2.addAll(list1);
+
+        assertEquals("[-3, -2, -1, 0, 1, 2, 3, 4]", list2.toString());
+
+        List<Integer> list3 = newList(Integer.class);
+        list3.addAll(0, list1);
+        list3.addAll(0, list2);
+        list3.addAll(13, list1);
+        list3.addAll(13, list2);
+
+        assertEquals("[-3, -2, -1, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, -3, -2, -1, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4]", list3.toString());
+
+        List<Integer> list4 = newList(Integer.class);
+
+        assertThrows(IndexOutOfBoundsException.class, () -> list4.add(-1, 0));
+
+        assertThrows(IndexOutOfBoundsException.class, () -> list4.add(1, 0));
+
+        list4.add(0);
+        list4.add(1);
+
+        assertThrows(IndexOutOfBoundsException.class, () -> list4.add(-1, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> list4.add(3, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> list4.addAll(-1, list1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list4.addAll(3, list1));
+        assertThrows(NullPointerException.class, () -> list4.addAll(null));
+    }
+
+    @Test
+    public void testIndexOfMethods() {
+        List<Integer> list1 = newList(Integer.class);
+        list1.add(0);
+        list1.add(1);
         list1.add(2);
+        list1.add(0);
+        list1.add(1);
         list1.add(2);
+        list1.add(3);
+        list1.add(0);
+        list1.add(1);
+        list1.add(5);
+
+        assertEquals("[0, 1, 2, 0, 1, 2, 3, 0, 1, 5]", list1.toString());
+        assertEquals(0, list1.indexOf(0));
+        assertEquals(7, list1.lastIndexOf(0));
+        assertEquals(1, list1.indexOf(1));
+        assertEquals(8, list1.lastIndexOf(1));
+        assertEquals(2, list1.indexOf(2));
+        assertEquals(5, list1.lastIndexOf(2));
+        assertEquals(6, list1.indexOf(3));
+        assertEquals(6, list1.lastIndexOf(3));
+        assertEquals(9, list1.indexOf(5));
+        assertEquals(9, list1.lastIndexOf(5));
+        assertEquals(-1, list1.indexOf(100));
+
+    }
+
+    @Test
+    public void testRemoveMethods() {
+        List<Integer> list1 = newList(Integer.class);
+        list1.add(0);
+        list1.add(1);
         list1.add(2);
+        list1.add(3);
+        list1.add(4);
+        list1.add(5);
+
+        assertEquals("[0, 1, 2, 3, 4, 5]", list1.toString());
+        assertEquals((Integer) 3, list1.remove(3));
+        assertTrue(list1.remove(Integer.valueOf(4)));
+        assertTrue(list1.remove(Integer.valueOf(5)));
+        assertFalse(list1.remove(Integer.valueOf(6)));
+        assertEquals("[0, 1, 2]", list1.toString());
+
+        List<Integer> list2 = newList(Integer.class);
+        list2.add(0);
+        list2.add(1);
+        list2.add(2);
+        list2.add(3);
+        list2.add(4);
+        list2.add(3);
+        list2.add(2);
+        list2.add(1);
+        list2.add(0);
+        list2.add(1);
+
+        assertEquals("[0, 1, 2, 3, 4, 3, 2, 1, 0, 1]", list2.toString());
+        assertThrows(IndexOutOfBoundsException.class, () -> list2.remove(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list2.remove(11));
+        assertThrows(NullPointerException.class, () -> list2.retainAll(null));
+        assertTrue(list2.removeAll(list1));
+        assertFalse(list2.removeAll(newList(Integer.class)));
+        assertEquals("[3, 4, 3]", list2.toString());
+
+        List<Integer> list3 = newList(Integer.class);
+        list3.add(3);
+        list3.add(4);
+        list3.add(3);
+
+        assertTrue(list2.removeAll(list3));
+        assertEquals("[]", list2.toString());
+
+        assertFalse(newList(Integer.class).removeAll(list1));
+        assertFalse(newList(Integer.class).removeAll(newList(Integer.class)));
+
+        List<String> list4 = newList(String.class);
+        assertFalse(list2.removeAll(list4));
+
+        List<Integer> list5 = newList(Integer.class);
+        list5.add(100);
+        list5.add(200);
+        list5.add(300);
+
+        assertFalse(list2.removeAll(list5));
+    }
+
+    @Test
+    public void testContainMethods() {
+
+        List<String> list1 = newList(String.class);
+        list1.add("a");
+        list1.add("b");
+        list1.add("c");
+        list1.add(null);
+
+        List<String> list2 = newList(String.class);
+        list2.add("d");
+        list2.add("e");
+        list2.add("f");
+
+        List<String> list3 = newList(String.class);
+        list3.add("d");
+        list3.add("e");
+        list3.add("f");
+        list3.add("g");
+        list3.add("h");
+
+        List<Integer> list4 = newList(Integer.class);
+        list4.add(10);
+        list4.add(20);
+        list4.add(30);
+
+        assertTrue(list1.contains(null));
+        assertFalse(list2.contains(null));
+        assertTrue(list3.contains("d"));
+        assertFalse(list3.contains("a"));
+        assertFalse(list3.contains(1));
+        assertTrue(list3.containsAll(list2));
+        assertFalse(list3.containsAll(list1));
+        assertFalse(list3.containsAll(list4));
+        assertTrue(newList(String.class).containsAll(newList(String.class)));
+        assertThrows(NullPointerException.class, () -> list3.containsAll(null));
+    }
+
+    @Test
+    public void testRetainMethod() {
+        List<Character> list1 = newList(Character.class);
+        list1.add('a');
+        list1.add('b');
+        list1.add('c');
+        list1.add('d');
+
+        List<Character> list2 = newList(Character.class);
+        list2.addAll(list1);
+        list2.add('c');
+        list2.add('d');
+        list2.add('a');
+        list2.add('b');
+
+        List<Character> list3 = newList(Character.class);
+        list3.addAll(list1);
+        list3.add('s');
+        list3.add('t');
+        list3.add('u');
+        list3.add('v');
+        list3.add('a');
+        list3.add('b');
+        list3.add('c');
+
+        assertEquals("[a, b, c, d]", list1.toString());
+        assertEquals("[a, b, c, d, c, d, a, b]", list2.toString());
+        assertEquals("[a, b, c, d, s, t, u, v, a, b, c]", list3.toString());
+
+        assertFalse(list2.retainAll(list1));
+        assertEquals("[a, b, c, d, c, d, a, b]", list2.toString());
+
+        assertTrue(list3.retainAll(list1));
+        assertEquals("[a, b, c, d, a, b, c]", list3.toString());
+
+        assertTrue(list3.retainAll(newList(String.class)));
+        assertEquals("[]", list3.toString());
+
+        assertFalse(list3.retainAll(newList(Character.class)));
+        assertEquals("[]", list3.toString());
+
+        assertFalse(list3.retainAll(newList(Character.class)));
+        assertEquals("[]", list3.toString());
+
+        assertFalse(list3.retainAll(list1));
+        assertEquals("[]", list3.toString());
+
+        assertFalse(list3.retainAll(newList(String.class)));
+        assertEquals("[]", list3.toString());
+
+        assertThrows(NullPointerException.class, () -> list3.retainAll(null));
+
+        List<String> list4 = newList(String.class);
+        list4.add("a");
+        list4.add("b");
+        list4.add("c");
+
+        assertTrue(list2.retainAll(list4));
+        assertEquals("[]", list2.toString());
+
+    }
+
+    @Test
+    public void testGetAndSetMethods() {
+        List<Integer> list1 = newList(Integer.class);
+        list1.add(5);
+        list1.add(4);
+        list1.add(3);
+        list1.add(2);
+        list1.add(1);
+        list1.add(0);
+
+        assertEquals("[5, 4, 3, 2, 1, 0]", list1.toString());
+
+        assertEquals(Integer.valueOf(5), list1.get(0));
+        assertEquals(Integer.valueOf(4), list1.get(1));
+        assertEquals(Integer.valueOf(3), list1.get(2));
+        assertEquals(Integer.valueOf(2), list1.get(3));
+        assertEquals(Integer.valueOf(1), list1.get(4));
+        assertEquals(Integer.valueOf(0), list1.get(5));
+
+        assertEquals(Integer.valueOf(5), list1.set(0, 0));
+        assertEquals(Integer.valueOf(4), list1.set(1, 1));
+        assertEquals(Integer.valueOf(3), list1.set(2, 2));
+        assertEquals(Integer.valueOf(2), list1.set(3, 3));
+        assertEquals(Integer.valueOf(1), list1.set(4, 4));
+        assertEquals(Integer.valueOf(0), list1.set(5, 5));
+
+        assertEquals("[0, 1, 2, 3, 4, 5]", list1.toString());
+
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.get(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.get(list1.size()));
+        assertThrows(IndexOutOfBoundsException.class, () -> newList(Integer.class).get(0));
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.set(-1, 5));
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.set(list1.size(), 5));
+    }
+
+    @Test
+    public void testSubListMethod() {
+        List<Integer> list1 = newList(Integer.class);
+        list1.add(0);
+        list1.add(1);
+        list1.add(2);
+        list1.add(3);
+        list1.add(4);
+
+        assertEquals("[0, 1, 2, 3, 4]", list1.toString());
+        assertEquals("[0, 1, 2, 3, 4]", list1.subList(0, 5).toString());
+        assertEquals("[0]", list1.subList(0, 1).toString());
+        assertEquals("[1, 2]", list1.subList(1, 3).toString());
+        assertEquals("[3]", list1.subList(3, 4).toString());
+        assertEquals("[3, 4]", list1.subList(3, 5).toString());
+        assertEquals("[]", list1.subList(0, 0).toString());
+        assertEquals("[]", list1.subList(2, 2).toString());
+        assertEquals("[]", list1.subList(4, 4).toString());
+        assertEquals("[]", list1.subList(5, 5).toString());
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.subList(0, 6));
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.subList(-1, 5));
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.subList(-1, -1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.subList(-1, 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.subList(-1, 6));
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.subList(-1, 7));
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.subList(6, 6));
+        assertThrows(IndexOutOfBoundsException.class, () -> list1.subList(7, 7));
+        assertThrows(IllegalArgumentException.class, () -> list1.subList(6, 0));
+        assertThrows(IllegalArgumentException.class, () -> list1.subList(1, 0));
+        assertThrows(IllegalArgumentException.class, () -> list1.subList(1, -1));
+
+    }
+
+    @Test
+    public void testIterator() {
+        List<Integer> list1 = newList(Integer.class);
+        list1.add(0);
+        list1.add(1);
+        list1.add(2);
+        list1.add(3);
         list1.add(100);
-        Assert.assertTrue(list1.removeAll(l1));
-        Assert.assertTrue(list1.removeAll(l2));
-        Assert.assertTrue(list1.removeAll(l4));
-        Assert.assertEquals("Size=6:[5, 6, 7, 8, 10, 100]", list1.toString());
+        list1.add(200);
+        list1.add(300);
+        list1.add(0);
+        list1.add(1);
+        list1.add(2);
+        list1.add(3);
+
+        List<Integer> list2 = newList(Integer.class);
+
+        for (Integer i : list1)
+            list2.add(i);
+
+        assertEquals("[0, 1, 2, 3, 100, 200, 300, 0, 1, 2, 3]", list1.toString());
+        assertEquals(list1.toString(), list2.toString());
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+                    Iterator<Integer> iterator = list.iterator();
+                    iterator.remove();
+                }
+        );
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                        iterator.remove();
+                        iterator.remove();
+                    }
+
+                }
+        );
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+                    Iterator<Integer> iterator = list.iterator();
+                    iterator.next();
+                    iterator.remove();
+                    iterator.remove();
+                }
+        );
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                        iterator.remove();
+                    }
+                    iterator.remove();
+                }
+        );
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                    }
+                    iterator.remove();
+                    iterator.remove();
+                }
+        );
+
+        assertThrows(
+                NoSuchElementException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext())
+                        iterator.next();
+                    iterator.next();
+                }
+        );
+
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                        list.add(3);
+                    }
+                }
+        );
+
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                        list.addAll(list1);
+                    }
+                }
+        );
+
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                        list.remove(0);
+                    }
+                }
+        );
+
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                        list.remove(list.size() - 1);
+                    }
+                }
+        );
+
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+
+                    List<Integer> list3 = newList(Integer.class);
+                    list3.add(0);
+                    list3.add(1);
+                    list3.add(2);
+
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                        list.removeAll(list3);
+                    }
+                }
+        );
+
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+
+                    List<Integer> list4 = newList(Integer.class);
+                    list4.add(100);
+                    list4.add(200);
+                    list4.add(300);
+
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                        list.retainAll(list4);
+                    }
+                }
+        );
+
+        assertThrows(
+                ConcurrentModificationException.class,
+                () -> {
+                    List<Integer> list = newList(Integer.class);
+                    list.addAll(list1);
+
+                    Iterator<Integer> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        iterator.next();
+                        list.clear();
+                    }
+                }
+        );
 
     }
 
     @Test
-    public void test4() {
+    public void testToArrayMethod() {
+        List<Integer> list1 = newList(Integer.class);
+        list1.add(0);
+        list1.add(1);
+        list1.add(2);
 
-        List<Integer> list = newList(Integer.class);
-
-        list.addAll(l1);
-
-        Assert.assertTrue(list.contains(-5));
-        Assert.assertFalse(list.contains(100));
-        Assert.assertTrue(list.containsAll(l1));
-
-        list.addAll(l2);
-        list.addAll(l2);
-
-        Assert.assertTrue(list.containsAll(l2));
-        Assert.assertFalse(list.containsAll(l3));
-        Assert.assertTrue(list.containsAll(l5));
-
-        Assert.assertTrue(list.retainAll(l2));
-        Assert.assertTrue(list.retainAll(newList(Integer.class)));
-        Assert.assertEquals("Size=0:[]", list.toString());
-
-
+        assertEquals(Arrays.toString(new int[]{0, 1, 2}), Arrays.toString(list1.toArray()));
+        assertEquals(Arrays.toString(new int[]{}), Arrays.toString(newList(Integer.class).toArray()));
+        assertEquals(Arrays.toString(new int[0]), Arrays.toString(newList(Integer.class).toArray()));
     }
 
     @Test
-    public void test5() {
-        List<Integer> list = newList(Integer.class);
+    public void testOtherMethods() {
+        List<Integer> list1 = newList(Integer.class);
+        list1.add(0);
+        list1.add(1);
+        list1.add(2);
 
-        Assert.assertTrue(list.isEmpty());
+        assertEquals("[0, 1, 2]", list1.toString());
+        assertEquals(3, list1.size());
+        assertFalse(list1.isEmpty());
 
-        list.addAll(l1);
-        list.addAll(l2);
-        list.addAll(l3);
-
-        Assert.assertFalse(list.isEmpty());
-        Assert.assertEquals(Integer.valueOf(16), (Integer) list.size());
-        Assert.assertEquals("Size=16:[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", list.toString());
-
-        Assert.assertEquals(Integer.valueOf(-5), list.get(0));
-        Assert.assertEquals(Integer.valueOf(0), list.get(5));
-        Assert.assertEquals(Integer.valueOf(1), list.get(6));
-        Assert.assertEquals(Integer.valueOf(3), list.get(8));
-        Assert.assertEquals(Integer.valueOf(10), list.get(list.size() - 1));
-
-        Assert.assertEquals(Integer.valueOf(-5), list.set(0, -50));
-        Assert.assertEquals(Integer.valueOf(0), list.set(5, 50));
-
-        Assert.assertEquals(Integer.valueOf(-50), list.get(0));
-        Assert.assertEquals(Integer.valueOf(50), list.get(5));
-
-        list.clear();
-        Assert.assertTrue(list.isEmpty());
-        Assert.assertEquals(Integer.valueOf(0), (Integer) list.size());
-
+        list1.clear();
+        assertEquals("[]", list1.toString());
+        assertEquals(0, list1.size());
+        assertTrue(list1.isEmpty());
     }
 
-    @Test
-    public void test6() {
-        List<Integer> list = newList(Integer.class);
-
-        list.addAll(l1);
-        list.addAll(l2);
-        list.addAll(l3);
-
-        Assert.assertEquals("Size=16:[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", list.toString());
-        Assert.assertEquals("Size=5:[0, 1, 2, 3, 4]", list.subList(5, 10).toString());
-        Assert.assertEquals("Size=1:[-5]", list.subList(0, 1).toString());
-        Assert.assertEquals("Size=0:[]", list.subList(1, 1).toString());
-    }
-
-    @Test
-    public void test7() {
-        List<Integer> list = newList(Integer.class);
-        list.addAll(l1);
-
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.add(list.size() + 1, 10));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.addAll(list.size() + 1, newList(Integer.class)));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.get(-1));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.get(10));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.set(-1, 10));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.set(10, 10));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.remove(-1));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.remove(list.size() + 1));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.subList(0, list.size() + 1));
-        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.subList(-1, list.size()));
-        Assert.assertThrows(IllegalArgumentException.class, () -> list.subList(1, 0));
-
-
-        ThrowingRunnable runnable1 = () -> {
-            for (Integer next : list)
-                if (next == -1)
-                    list.remove(next);
-        };
-
-        ThrowingRunnable runnable2 = () -> {
-            for (Integer next : list) {
-                if (next == -2)
-                    list.add(5);
-            }
-        };
-
-        ThrowingRunnable runnable3 = () -> {
-            for (Integer next : list) {
-                if (next == -3)
-                    list.set(0, 5);
-            }
-        };
-
-        ThrowingRunnable runnable4 = () -> {
-            Iterator<Integer> iterator = list.iterator();
-            iterator.remove();
-        };
-
-        ThrowingRunnable runnable5 = () -> {
-            Iterator<Integer> iterator = list.iterator();
-            while (iterator.hasNext())
-                iterator.next();
-            iterator.next();
-        };
-
-        ThrowingRunnable runnable6 = () -> {
-            Iterator<Integer> iterator = list.iterator();
-            iterator.next();
-            iterator.next();
-            list.add(10);
-            iterator.remove();
-        };
-
-        ThrowingRunnable runnable7 = () -> {
-            Iterator<Integer> iterator = list.iterator();
-            while (iterator.hasNext())
-                iterator.next();
-            iterator.remove();
-            iterator.remove();
-        };
-
-        Assert.assertThrows(ConcurrentModificationException.class, runnable1);
-        Assert.assertThrows(ConcurrentModificationException.class, runnable2);
-        Assert.assertThrows(ConcurrentModificationException.class, runnable3);
-        Assert.assertThrows(IllegalStateException.class, runnable4);
-        Assert.assertThrows(NoSuchElementException.class, runnable5);
-        Assert.assertThrows(ConcurrentModificationException.class, runnable6);
-        Assert.assertThrows(IllegalStateException.class, runnable7);
-    }
-
-    @Test
-    public void test8() {
-
-        List<Integer> list = newList(Integer.class);
-        list.addAll(l2);
-        list.addAll(l3);
-
-        Assert.assertEquals("Size=11:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", list.toString());
-
-        Iterator<Integer> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            var next = iterator.next();
-            if (next % 2 == 0)
-                iterator.remove();
-        }
-
-        Assert.assertEquals("Size=5:[1, 3, 5, 7, 9]", list.toString());
-    }
 
     private <T> List<T> newList(Class<T> type) {
         return new ArrayList<>();
