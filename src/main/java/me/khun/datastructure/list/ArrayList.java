@@ -181,14 +181,19 @@ public class ArrayList<E> implements List<E> {
     @Override
     public boolean retainAll(Collection<?> c) {
 
-        if (c == this)
+        if (c == this || isEmpty())
+            return false;
+        if (c.isEmpty()) {
+            clear();
             return true;
+        }
 
         var retainedContainer = new Object[capacity];
         var retainedCount = 0;
+        var sizeBefore = size;
 
-        for (Object e: container)
-            for (Object o : c)
+        for (E e: container)
+            for (E o : (Collection<? extends E>)c)
                 if (Objects.equals(o, e))
                     retainedContainer[retainedCount++] = e;
 
@@ -196,7 +201,7 @@ public class ArrayList<E> implements List<E> {
         size = retainedCount;
         modificationCount++;
 
-        return true;
+        return sizeBefore != size;
     }
 
     //Time Complexity : O(1)
