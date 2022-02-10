@@ -164,10 +164,15 @@ public class ArrayList<E> implements List<E> {
         if (c.isEmpty())
             return false;
 
-        for (Object o : c)
+        for (Object o : c) {
+
+            if (isEmpty())
+                break;
+
             for (int i = 0; i < size; i++)
                 if (Objects.equals(o, container[i]))
                     remove(i--);
+        }
 
         return true;
     }
