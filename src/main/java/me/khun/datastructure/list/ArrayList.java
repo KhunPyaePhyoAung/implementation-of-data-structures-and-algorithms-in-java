@@ -250,6 +250,7 @@ public class ArrayList<E> implements List<E> {
 
             int currentIndex = 0;
             long expectedModificationCount = -1;
+            boolean currentElementExists = false;
 
             @Override
             public boolean hasNext() {
@@ -260,10 +261,10 @@ public class ArrayList<E> implements List<E> {
             @Override
             public E next() {
 
-                checkModificationCount();
-
                 if (!hasNext())
                     throw new NoSuchElementException("No Such Element.");
+
+                currentElementExists = true;
 
                 return container[currentIndex++];
             }
@@ -271,17 +272,18 @@ public class ArrayList<E> implements List<E> {
             @Override
             public void remove() {
 
+                if (!currentElementExists)
+                    throw new IllegalStateException();
+
                 checkModificationCount();
 
                 var removeIndex = currentIndex - 1;
 
-                if (removeIndex < 0 || removeIndex >= size)
-                    throw new IllegalStateException();
-
                 ArrayList.this.remove(removeIndex);
                 modificationCount--;
-                if (removeIndex < size)
-                    currentIndex--;
+                currentIndex--;
+                currentElementExists = false;
+
             }
 
             private void checkModificationCount() {
