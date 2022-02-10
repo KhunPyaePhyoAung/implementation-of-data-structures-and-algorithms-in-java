@@ -249,7 +249,7 @@ public class ArrayList<E> implements List<E> {
         for (int i = 0; i < size; i++)
             container[i] = null;
         size = 0;
-        modificationCount = 0;
+        modificationCount++;
     }
 
     //Time Complexity : O(1)
