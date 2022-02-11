@@ -215,12 +215,8 @@ public class ArrayList<E> implements List<E> {
     //Time Complexity : O(1)
     @Override
     public E set(int index, E element) {
-
         E value = get(index);
         container[index] = element;
-
-        modificationCount++;
-
         return value;
     }
 
