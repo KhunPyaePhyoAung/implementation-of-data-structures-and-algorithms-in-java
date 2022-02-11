@@ -22,7 +22,8 @@ public class ListTest {
         list2.add(0, -3);
         list2.add(1, -2);
         list2.add(-1);
-        list2.addAll(list1);
+        assertTrue(list2.addAll(list1));
+        assertFalse(list2.addAll(newList(Integer.class)));
 
         assertEquals("[-3, -2, -1, 0, 1, 2, 3, 4]", list2.toString());
 
@@ -40,8 +41,11 @@ public class ListTest {
 
         assertThrows(IndexOutOfBoundsException.class, () -> list4.add(1, 0));
 
+        List<Integer> list5 = newList(Integer.class);
+        list5.add(1);
+
         list4.add(0);
-        list4.add(1);
+        assertTrue(list4.addAll(list5));
 
         assertThrows(IndexOutOfBoundsException.class, () -> list4.add(-1, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> list4.add(3, 0));
