@@ -140,6 +140,11 @@ public class ListTest {
         list5.add(300);
 
         assertFalse(list2.removeAll(list5));
+
+        List<Integer> list6 = newList(Integer.class);
+        list6.add(1);
+        list6.remove(0);
+        assertEquals("[]", list6.toString());
     }
 
     @Test
@@ -547,6 +552,6 @@ public class ListTest {
 
 
     private <T> List<T> newList(Class<T> type) {
-        return new ArrayList<>();
+        return new SinglyLinkedList<>();
     }
 }
