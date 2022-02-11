@@ -71,7 +71,7 @@ public class ArrayList<E> implements List<E> {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
         if (c.isEmpty())
-            return true;
+            return false;
 
         var newSize = size + c.size();
 
