@@ -344,10 +344,12 @@ public class SinglyLinkedList<E> implements List<E> {
                 checkModificationCount();
 
                 var previous = getPreviousNode(traverse);
-                if (previous != null)
+                if (previous != null) {
                     SinglyLinkedList.this.remove(previous);
+                    modificationCount--;
+                }
                 currentElementExists = false;
-                modificationCount--;
+
             }
 
             private void checkModificationCount() {
