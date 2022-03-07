@@ -82,7 +82,6 @@ public class CircularSinglyLinkedList<E> implements List<E> {
 
         Node<E> cHead = null;
         Node<E> cTail = null;
-        Node<E> previous = null;
 
         for (E e : c) {
 
@@ -91,9 +90,8 @@ public class CircularSinglyLinkedList<E> implements List<E> {
             if (cHead == null)
                 cHead = node;
             else
-                linkNodes(previous, node);
+                linkNodes(cTail, node);
 
-            previous = node;
             cTail = node;
         }
 

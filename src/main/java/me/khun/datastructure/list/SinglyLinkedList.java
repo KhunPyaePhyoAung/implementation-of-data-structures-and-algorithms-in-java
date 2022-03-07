@@ -94,7 +94,6 @@ public class SinglyLinkedList<E> implements List<E> {
 
         Node<E> cHead = null;
         Node<E> cTail = null;
-        Node<E> previous = null;
 
         for (E e : c) {
             var currentNode = new Node<>(e);
@@ -102,10 +101,9 @@ public class SinglyLinkedList<E> implements List<E> {
             if (cHead == null)
                 cHead = currentNode;
             else
-                linkNodes(previous, currentNode);
+                linkNodes(cTail, currentNode);
 
             cTail = currentNode;
-            previous = currentNode;
         }
 
         if (isEmpty()) {
