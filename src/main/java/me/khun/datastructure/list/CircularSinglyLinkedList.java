@@ -140,7 +140,9 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException();
 
-        if (index == size - 1)
+        if (index == 0)
+            return head;
+        else if (index == size - 1)
             return tail;
 
         var traverse = head;

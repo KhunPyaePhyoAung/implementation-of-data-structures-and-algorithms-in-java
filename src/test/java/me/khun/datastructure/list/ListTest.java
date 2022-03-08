@@ -550,8 +550,7 @@ public class ListTest {
         assertTrue(list1.isEmpty());
     }
 
-
     private <T> List<T> newList(Class<T> type) {
-        return new SinglyLinkedList<>();
+        return new CircularDoublyLinkedList<>();
     }
 }

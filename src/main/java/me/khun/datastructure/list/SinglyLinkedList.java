@@ -133,6 +133,11 @@ public class SinglyLinkedList<E> implements List<E> {
         if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
+        if (index == 0)
+            return head;
+        else if (index == size - 1)
+            return tail;
+
         var traverse = head;
         for (int i = 0; i < index; i++)
             traverse = traverse.next;

@@ -113,6 +113,11 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         if (index <0 || index >= size)
             throw new IndexOutOfBoundsException();
 
+        if (index == 0)
+            return head;
+        else if (index == size - 1)
+            return tail;
+
         Node<E> traverse;
 
         if (index < size / 2) {
