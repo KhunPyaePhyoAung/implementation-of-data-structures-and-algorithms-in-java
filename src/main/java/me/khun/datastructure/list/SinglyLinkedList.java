@@ -1,6 +1,7 @@
 package me.khun.datastructure.list;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
 public class SinglyLinkedList<E> implements List<E> {
@@ -68,7 +69,6 @@ public class SinglyLinkedList<E> implements List<E> {
 
         size++;
         modificationCount++;
-
     }
 
     private void linkNodes(Node<E> left, Node<E> right) {
@@ -127,7 +127,6 @@ public class SinglyLinkedList<E> implements List<E> {
         return true;
     }
 
-
     // Time Complexity = O(n)
     private Node<E> getNode(int index) {
         if (index < 0 || index >= size)
@@ -156,21 +155,53 @@ public class SinglyLinkedList<E> implements List<E> {
     // Time Complexity = O(n)
     @Override
     public E remove(int index) {
-        return remove(getNode(index));
+        if (index < 0 || index >= size)
+            throw new IndexOutOfBoundsException();
+
+        Node<E> previous = null;
+        Node<E> traverse = head;
+
+        for (int i = 0; i < index; i++) {
+            previous = traverse;
+            traverse = traverse.next;
+        }
+
+        return remove(traverse, previous);
     }
 
     // Time Complexity = O(n)
     @Override
     public boolean remove(Object o) {
-        var traverse = head;
+        Node<E> previous = null;
+        Node<E> traverse = head;
+
         while (traverse != null) {
             if (Objects.equals(traverse.value, o)) {
-                remove(traverse);
+                remove(traverse, previous);
                 return true;
             }
+            previous = traverse;
             traverse = traverse.next;
         }
         return false;
+    }
+
+    // Time Complexity = O(n) * O(m) , O(m) = Time Complexity Of predicate
+    private boolean removeAllIf(Predicate<E> predicate) {
+        var sizeBefore = size;
+        Node<E> previous = null;
+        Node<E> traverse = head;
+
+        while (traverse != null) {
+            var next = traverse.next;
+            if (predicate.test(traverse.value))
+                remove(traverse, previous);
+            else
+                previous = traverse;
+            traverse = next;
+        }
+
+        return sizeBefore != size;
     }
 
     // Time Complexity = O(nm) , m = size of c
@@ -180,35 +211,21 @@ public class SinglyLinkedList<E> implements List<E> {
         if (c.isEmpty() || isEmpty())
             return false;
 
-        var sizeBefore = size;
-
-        var traverse = head;
-        while (traverse != null) {
-            var next = traverse.next;
-            if (c.contains(traverse.value))
-                remove(traverse);
-            traverse = next;
-        }
-
-        return sizeBefore != size;
+        return removeAllIf(c::contains);
     }
 
-    // Time Complexity = O(n)
-    private E remove(Node<E> node) {
+    // Time Complexity = O(1)
+    private E remove(Node<E> target, Node<E> previous) {
+        linkNodes(previous, target.next);
 
-        var previousNode = getPreviousNode(node);
+        if (target == head)
+            head = target.next;
+        if (target == tail)
+            tail = previous;
 
-        if (node == head)
-            head = node.next;
-        if (node == tail)
-            tail = previousNode;
-
-        linkNodes(previousNode, node.next);
-
-        var value = node.value;
-        node.next = null;
-        node.value = null;
-
+        var value = target.value;
+        target.value = null;
+        target.next = target = null;
         size--;
         modificationCount++;
         return value;
@@ -238,18 +255,11 @@ public class SinglyLinkedList<E> implements List<E> {
 
         var sizeBefore = size;
 
-        if (c.isEmpty()) {
+        if (c.isEmpty())
             clear();
-            return sizeBefore != size;
-        }
+        else
+            removeAllIf(t -> !c.contains(t));
 
-        var traverse = head;
-        while (traverse != null) {
-            var next = traverse.next;
-            if (!c.contains(traverse.value))
-                remove(traverse);
-            traverse = next;
-        }
         return sizeBefore != size;
     }
 
@@ -317,27 +327,36 @@ public class SinglyLinkedList<E> implements List<E> {
         return new Iterator<>() {
 
             long expectedModificationCount = -1;
-            Node<E> traverse = head;
+            Node<E> traverse = null;
+            Node<E> previous = null;
+            Node<E> next = head;
             boolean currentElementExists = false;
 
+            // Time Complexity = O(1)
             @Override
             public boolean hasNext() {
                 checkModificationCount();
-                return traverse != null;
+                if (next == head)
+                    return head != null;
+                return next != null;
             }
 
+            // Time Complexity = O(1)
             @Override
             public E next() {
 
                 if (!hasNext())
                     throw new NoSuchElementException("No such element.");
 
+                previous = traverse;
+                traverse = next;
+                next = next.next;
                 var value = traverse.value;
-                traverse = traverse.next;
                 currentElementExists = true;
                 return value;
             }
 
+            // Time Complexity = O(1)
             @Override
             public void remove() {
 
@@ -346,11 +365,8 @@ public class SinglyLinkedList<E> implements List<E> {
 
                 checkModificationCount();
 
-                var previous = getPreviousNode(traverse);
-                if (previous != null) {
-                    SinglyLinkedList.this.remove(previous);
-                    modificationCount--;
-                }
+                SinglyLinkedList.this.remove(traverse, previous);
+                modificationCount--;
                 currentElementExists = false;
 
             }

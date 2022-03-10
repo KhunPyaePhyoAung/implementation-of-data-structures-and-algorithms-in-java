@@ -1,6 +1,7 @@
 package me.khun.datastructure.list;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class CircularSinglyLinkedList<E> implements List<E> {
 
@@ -155,7 +156,18 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     // Time Complexity = O(n)
     @Override
     public E remove(int index) {
-        return remove(getNode(index));
+        if (index < 0 || index >= size)
+            throw new IndexOutOfBoundsException();
+
+        Node<E> previous = null;
+        Node<E> traverse = head;
+
+        for (int i = 0; i < index; i++) {
+            previous = traverse;
+            traverse = traverse.next;
+        }
+
+        return remove(traverse, previous);
     }
 
     // Time Complexity = O(n)
@@ -164,13 +176,15 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         if (isEmpty())
             return false;
 
-        var traverse = head;
+        Node<E> previous = null;
+        Node<E> traverse = head;
 
         do {
             if (Objects.equals(o, traverse.value)) {
-                remove(traverse);
+                remove(traverse, previous);
                 return true;
             }
+            previous = traverse;
             traverse = traverse.next;
         } while (traverse != head);
 
@@ -184,38 +198,44 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         if (isEmpty() || c.isEmpty())
             return false;
 
+        return removeAllIf(c::contains);
+    }
+
+    // Time Complexity = O(n) * O(m) , O(m) = Time complexity of predicate
+    private boolean removeAllIf(Predicate<E> predicate) {
+        if (isEmpty())
+            return false;
+
         var sizeBefore = size;
 
-        var traverse = head;
+        Node<E> previous = null;
+        Node<E> traverse = head;
 
-        for (int i = 0; i < sizeBefore; i++) {
+        var length = size;
+        for (int i = 0; i < length; i++) {
             var next = traverse.next;
-            if (c.contains(traverse.value))
-                remove(traverse);
+            if (predicate.test(traverse.value))
+                remove(traverse, previous);
+            else
+                previous = traverse;
             traverse = next;
         }
+
         return sizeBefore != size;
     }
 
-    // Time Complexity = O(n)
-    private E remove(Node<E> node) {
+    // Time Complexity = O(1)
+    public E remove(Node<E> target, Node<E> previous) {
+        linkNodes(previous, target.next);
+        if (target == head)
+            head = tail == head ? null : target.next;
+        if (target == tail)
+            tail = previous;
 
-        var value = node.value;
-
-        if (size == 1) {
-            head.next = head = tail = null;
-        } else {
-            var previousNode = getPreviousNode(node);
-            var nextNode = node.next;
-            linkNodes(previousNode, nextNode);
-            if (node == head)
-                head = nextNode;
-            if (node == tail)
-                tail = previousNode;
-        }
-
-        node.next = node = null;
         linkNodes(tail, head);
+        var value = target.value;
+        target.value = null;
+        target.next = target = null;
         size--;
         modificationCount++;
         return value;
@@ -227,22 +247,10 @@ public class CircularSinglyLinkedList<E> implements List<E> {
 
         var sizeBefore = size;
 
-        if (c.isEmpty()) {
+        if (c.isEmpty())
             clear();
-            return size != sizeBefore;
-        }
-
-        if (isEmpty())
-            return false;
-
-        var traverse = head;
-
-        for (int i = 0; i < sizeBefore; i++) {
-            var next = traverse.next;
-            if (!c.contains(traverse.value))
-                remove(traverse);
-            traverse = next;
-        }
+        else
+            removeAllIf(t -> !c.contains(t));
 
         return sizeBefore != size;
     }
@@ -329,39 +337,46 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         return new Iterator<>() {
 
             long expectedModificationCount = -1;
-            Node<E> traverse = head;
+            Node<E> traverse = null;
             Node<E> previous = null;
-            boolean flag = head != null;
+            Node<E> next = head;
             boolean currentElementExists = false;
+            boolean started = false;
 
+            // Time Complexity = O(1)
             @Override
             public boolean hasNext() {
                 checkModificationCount();
-                return traverse != head || flag;
+                if (!started && next == head)
+                    return head != null;
+                return next != head;
             }
 
+            // Time Complexity = O(1)
             @Override
             public E next() {
                 if (!hasNext())
                     throw new NoSuchElementException();
 
-                flag = false;
-
-                var value = traverse.value;
                 previous = traverse;
-                traverse = traverse.next;
+                traverse = next;
+                next = next.next;
+                started = true;
+                var value = traverse.value;
                 currentElementExists = true;
                 return value;
             }
 
+            // Time Complexity = O(1)
             @Override
             public void remove() {
                 checkModificationCount();
                 if (!currentElementExists)
                     throw new IllegalStateException();
-                CircularSinglyLinkedList.this.remove(previous);
+                CircularSinglyLinkedList.this.remove(traverse, previous);
                 currentElementExists = false;
                 modificationCount--;
+
             }
 
             private void checkModificationCount() {
