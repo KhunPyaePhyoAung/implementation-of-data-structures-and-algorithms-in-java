@@ -1,9 +1,8 @@
 package me.khun.datastructure.list;
 
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ArrayListTest {
 
@@ -27,6 +26,6 @@ public class ArrayListTest {
         List<Integer> list3 = new ArrayList<>(list1);
         list3.addAll(list2);
 
-        Assert.assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", list3.toString());
+        assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", list3.toString());
     }
 }
