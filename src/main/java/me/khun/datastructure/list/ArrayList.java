@@ -364,21 +364,14 @@ public class ArrayList<E> implements List<E> {
         if (o == this)
             return true;
 
-        if (o == null)
-            return false;
-
-        if (!(o instanceof List))
-            return false;
-
-        if (this.size() != ((List<?>) o).size())
+        if (!(o instanceof List<?> that) || this.size() != ((List<?>) o).size())
             return false;
 
         var thisIterator = this.iterator();
-        var oIterator = ((List<?>) o).iterator();
-        for (int i = 0; i < size; i++) {
-            if (!Objects.equals(thisIterator.next(), oIterator.next()))
+        var thatIterator = that.iterator();
+        while (thisIterator.hasNext())
+            if (!Objects.equals(thisIterator.next(), thatIterator.next()))
                 return false;
-        }
         return true;
     }
 

@@ -453,13 +453,8 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         if (this == o)
             return true;
 
-        if (o == null || getClass() != o.getClass())
+        if (!(o instanceof List<?> that) || this.size() != that.size())
             return false;
-
-        if (this.size() != ((CircularSinglyLinkedList<?>) o).size)
-            return false;
-
-        CircularSinglyLinkedList<?> that = (CircularSinglyLinkedList<?>) o;
 
         var thisIterator = this.iterator();
         var thatIterator = that.iterator();
