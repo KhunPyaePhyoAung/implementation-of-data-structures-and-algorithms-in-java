@@ -468,6 +468,12 @@ public class ListTest {
 
         assertFalse(l1Iterator1.hasNext());
 
+        var list0Iterator = list0.iterator();
+        var str = new StringBuilder();
+        while (list0Iterator.hasNext())
+            str.append(list0Iterator.next());
+        assertEquals("", str.toString());
+
         var list1Iterator = list1.iterator();
 
         while (list1Iterator.hasNext())
@@ -500,15 +506,7 @@ public class ListTest {
     @Test
     @Order(23)
     public void testIteratorRemove() {
-        var list0Iterator = list0.iterator();
-        var str = new StringBuilder();
-
-        while (list0Iterator.hasNext())
-            str.append(list0Iterator.next());
-        assertEquals("", str.toString());
-
         var list1Iterator = list1.iterator();
-
         while (list1Iterator.hasNext()) {
             list1Iterator.next();
             list1Iterator.remove();
@@ -588,6 +586,12 @@ public class ListTest {
             list2Iterator.remove();
         }
         assertThrows(IllegalStateException.class, list2Iterator::remove);
+
+        var list3Iterator = list3.iterator();
+        assertEquals(6, list3Iterator.next());
+        list3Iterator.remove();
+        list3.add(100);
+        assertThrows(IllegalStateException.class, () -> list3Iterator.remove());
     }
 
     @Test
@@ -845,7 +849,7 @@ public class ListTest {
     }
 
     private <T> List<T> newList(Class<T> type) {
-        return new SinglyLinkedList<>();
+        return new CircularSinglyLinkedList<>();
     }
 
 }
