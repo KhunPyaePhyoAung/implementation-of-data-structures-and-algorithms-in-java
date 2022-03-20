@@ -516,12 +516,16 @@ public class ListTest {
         assertEquals("[]", list1.toString());
 
         var list2Iterator = list2.iterator();
-
         while (list2Iterator.hasNext())
             if (list2Iterator.next() % 2 == 0)
                 list2Iterator.remove();
-
         assertEquals("[1, 3, 5]", list2.toString());
+
+        var list3Iterator = list3.iterator();
+        while (list3Iterator.hasNext())
+            if (list3Iterator.next() > 8)
+                list3Iterator.remove();
+        assertEquals("[6, 7, 8]", list3.toString());
     }
 
     @Test
