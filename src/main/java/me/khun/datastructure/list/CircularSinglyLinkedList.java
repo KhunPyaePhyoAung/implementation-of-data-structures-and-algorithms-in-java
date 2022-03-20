@@ -472,10 +472,8 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     @Override
     public int hashCode() {
         var hashCode = 0;
-        var count = 0;
         for (E e : this)
-            hashCode += e.hashCode() * count++;
-
+            hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
         return hashCode;
     }
 }

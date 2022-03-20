@@ -384,12 +384,9 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public int hashCode() {
-        var hashCode = 0;
-        var count = 0;
-        for (E e : this) {
-            hashCode += e.hashCode() * count;
-            count++;
-        }
+        var hashCode = 1;
+        for (E e : this)
+            hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
         return hashCode;
     }
 }
