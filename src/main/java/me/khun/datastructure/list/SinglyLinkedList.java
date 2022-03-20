@@ -334,9 +334,9 @@ public class SinglyLinkedList<E> implements List<E> {
             // Time Complexity = O(1)
             @Override
             public boolean hasNext() {
-                if (traverse != null)
-                    return traverse.next != null;
-                return head != null;
+                if (traverse == null)
+                    return previous == null ? head != null : previous.next != null;
+                return traverse.next != null;
             }
 
             // Time Complexity = O(1)
@@ -346,8 +346,8 @@ public class SinglyLinkedList<E> implements List<E> {
                 if (!hasNext())
                     throw new NoSuchElementException("No such element.");
 
-                previous = traverse;
-                traverse = traverse == null ? head : traverse.next;
+                previous = traverse == null ? previous : traverse;
+                traverse = previous == null ? head : previous.next;
                 var value = traverse.value;
                 currentElementExists = true;
                 return value;
@@ -363,7 +363,7 @@ public class SinglyLinkedList<E> implements List<E> {
                 checkModificationCount();
 
                 SinglyLinkedList.this.remove(traverse, previous);
-                traverse = traverse.next;
+                traverse = null;
                 modificationCount--;
                 currentElementExists = false;
             }
