@@ -156,7 +156,7 @@ public class SinglyLinkedList<E> implements List<E> {
     @Override
     public E remove(int index) {
         if (index < 0 || index >= size)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
         Node<E> previous = null;
         Node<E> traverse = head;
@@ -291,13 +291,13 @@ public class SinglyLinkedList<E> implements List<E> {
     // Time Complexity = O(1)
     @Override
     public void clear() {
+        modificationCount++;
         if (isEmpty())
             return;
         head.next = null;
         head.value = tail.value = null;
         head = tail = null;
         size = 0;
-        modificationCount++;
     }
 
     // Time Complexity = O(n)
@@ -326,31 +326,28 @@ public class SinglyLinkedList<E> implements List<E> {
     public Iterator<E> iterator() {
         return new Iterator<>() {
 
-            long expectedModificationCount = -1;
+            final long expectedModificationCount = modificationCount;
             Node<E> traverse = null;
             Node<E> previous = null;
-            Node<E> next = head;
             boolean currentElementExists = false;
 
             // Time Complexity = O(1)
             @Override
             public boolean hasNext() {
-                checkModificationCount();
-                if (next == head)
-                    return head != null;
-                return next != null;
+                if (traverse != null)
+                    return traverse.next != null;
+                return head != null;
             }
 
             // Time Complexity = O(1)
             @Override
             public E next() {
-
+                checkModificationCount();
                 if (!hasNext())
                     throw new NoSuchElementException("No such element.");
 
                 previous = traverse;
-                traverse = next;
-                next = next.next;
+                traverse = traverse == null ? head : traverse.next;
                 var value = traverse.value;
                 currentElementExists = true;
                 return value;
@@ -366,14 +363,12 @@ public class SinglyLinkedList<E> implements List<E> {
                 checkModificationCount();
 
                 SinglyLinkedList.this.remove(traverse, previous);
+                traverse = traverse.next;
                 modificationCount--;
                 currentElementExists = false;
-
             }
 
             private void checkModificationCount() {
-                if (expectedModificationCount == -1)
-                    expectedModificationCount = modificationCount;
                 if (expectedModificationCount != modificationCount)
                     throw new ConcurrentModificationException();
             }
@@ -409,12 +404,14 @@ public class SinglyLinkedList<E> implements List<E> {
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
 
-        if (fromIndex > toIndex)
-            throw new IllegalArgumentException("FromIndex cannot be greater than ToIndex.");
         if (fromIndex < 0)
-            throw new IndexOutOfBoundsException("FromIndex out of bounds : " + fromIndex);
+            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+
         if (toIndex > size)
-            throw new IndexOutOfBoundsException("ToIndex out of bounds : " + toIndex);
+            throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+
+        if (fromIndex > toIndex)
+            throw new IllegalArgumentException("fromIndex(%d) > toIndex(%d)".formatted(fromIndex, toIndex));
 
         List<E> list = new SinglyLinkedList<>();
 
@@ -442,5 +439,37 @@ public class SinglyLinkedList<E> implements List<E> {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
+        if (o == null)
+            return false;
+
+        if (!(o instanceof List<?>))
+            return false;
+
+        if (this.size() != ((List<?>) o).size())
+            return false;
+
+        var thisIterator = this.iterator();
+        var oIterator = ((List<?>) o).iterator();
+        while (thisIterator.hasNext()) {
+            if (!Objects.equals(thisIterator.next(), oIterator.next()))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        var hashCode = 0;
+        var count = 0;
+        for (E e : this)
+            hashCode += e.hashCode() * count++;
+        return hashCode;
     }
 }
