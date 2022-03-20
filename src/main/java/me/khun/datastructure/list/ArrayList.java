@@ -1,5 +1,6 @@
 package me.khun.datastructure.list;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 @SuppressWarnings("unchecked")
@@ -161,10 +162,15 @@ public class ArrayList<E> implements List<E> {
     @Override
     public boolean removeAll(Collection<?> c) {
 
+        var sizeBefore = size;
+
+        if (this == c) {
+            clear();
+            return sizeBefore != size;
+        }
+
         if (c.isEmpty() || isEmpty())
             return false;
-
-        var sizeBefore = size;
 
         for (Object o : c)
             for (int i = 0; i < size; i++)
@@ -199,7 +205,8 @@ public class ArrayList<E> implements List<E> {
 
         container = (E[]) retainedContainer;
         size = retainedCount;
-        modificationCount++;
+        if (sizeBefore != size)
+            modificationCount++;
 
         return sizeBefore != size;
     }
@@ -255,17 +262,18 @@ public class ArrayList<E> implements List<E> {
         return new Iterator<>() {
 
             int currentIndex = 0;
-            long expectedModificationCount = -1;
+            final long expectedModificationCount = modificationCount;
             boolean currentElementExists = false;
 
             @Override
             public boolean hasNext() {
-                checkModificationCount();
                 return currentIndex < size;
             }
 
             @Override
             public E next() {
+
+                checkModificationCount();
 
                 if (!hasNext())
                     throw new NoSuchElementException("No Such Element.");
@@ -293,9 +301,6 @@ public class ArrayList<E> implements List<E> {
             }
 
             private void checkModificationCount() {
-                if (expectedModificationCount == -1)
-                    expectedModificationCount = modificationCount;
-
                 if (expectedModificationCount != modificationCount)
                     throw new ConcurrentModificationException("Concurrent Modification Occurred.");
             }
@@ -326,13 +331,12 @@ public class ArrayList<E> implements List<E> {
     //Time Complexity : O(n)
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-
-        if (fromIndex > toIndex)
-            throw new IllegalArgumentException("FromIndex cannot be greater than ToIndex");
         if (fromIndex < 0)
-            throw new IndexOutOfBoundsException("FromIndex out of bounds : " + fromIndex);
+            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
         if (toIndex > size)
-            throw new IndexOutOfBoundsException("ToIndex out of bounds : " + toIndex);
+            throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+        if (fromIndex > toIndex)
+            throw new IllegalArgumentException("fromIndex(%d) > toIndex(%d)".formatted(fromIndex, toIndex));
 
         var list = new ArrayList<E>(toIndex - fromIndex);
 
@@ -353,5 +357,39 @@ public class ArrayList<E> implements List<E> {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+
+        if (o == null)
+            return false;
+
+        if (!(o instanceof List))
+            return false;
+
+        if (this.size() != ((List<?>) o).size())
+            return false;
+
+        var thisIterator = this.iterator();
+        var oIterator = ((List<?>) o).iterator();
+        for (int i = 0; i < size; i++) {
+            if (!Objects.equals(thisIterator.next(), oIterator.next()))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        var hashCode = 0;
+        var count = 0;
+        for (E e : this) {
+            hashCode += e.hashCode() * count;
+            count++;
+        }
+        return hashCode;
     }
 }
