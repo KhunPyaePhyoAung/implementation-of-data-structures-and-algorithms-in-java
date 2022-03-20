@@ -41,7 +41,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     @Override
     public void add(int index, E element) {
         if (index < 0 || index > size)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
         var node = new Node<>(element);
         if (isEmpty()) {
@@ -60,7 +60,6 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         }
 
         linkNodes(tail, head);
-
         size++;
         modificationCount++;
     }
@@ -76,7 +75,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     public boolean addAll(int index, Collection<? extends E> c) {
 
         if (index < 0 || index > size)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
         if (c.isEmpty())
             return false;
@@ -85,7 +84,6 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         Node<E> cTail = null;
 
         for (E e : c) {
-
             var node = new Node<>(e);
 
             if (cHead == null)
@@ -113,7 +111,6 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         }
 
         linkNodes(tail, head);
-
         size += c.size();
         modificationCount++;
         return true;
@@ -125,7 +122,6 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     }
 
     private Node<E> getPreviousNode(Node<E> node) {
-
         if (node == head)
             return tail;
 
@@ -139,7 +135,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
 
     private Node<E> getNode(int index) {
         if (index < 0 || index >= size)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
         if (index == 0)
             return head;
@@ -147,6 +143,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
             return tail;
 
         var traverse = head;
+
         for (int i = 0; i < index; i++)
             traverse = traverse.next;
 
@@ -157,7 +154,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     @Override
     public E remove(int index) {
         if (index < 0 || index >= size)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
         Node<E> previous = null;
         Node<E> traverse = head;
@@ -194,7 +191,6 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     // Time Complexity = O(nm) , m = size of c
     @Override
     public boolean removeAll(Collection<?> c) {
-
         if (isEmpty() || c.isEmpty())
             return false;
 
@@ -212,6 +208,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         Node<E> traverse = head;
 
         var length = size;
+
         for (int i = 0; i < length; i++) {
             var next = traverse.next;
             if (predicate.test(traverse.value))
@@ -244,7 +241,6 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     // Time Complexity = O(nm) , m = size of c
     @Override
     public boolean retainAll(Collection<?> c) {
-
         var sizeBefore = size;
 
         if (c.isEmpty())
@@ -335,33 +331,29 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     @Override
     public Iterator<E> iterator() {
         return new Iterator<>() {
-
-            long expectedModificationCount = -1;
+            final long expectedModificationCount = modificationCount;
             Node<E> traverse = null;
             Node<E> previous = null;
-            Node<E> next = head;
             boolean currentElementExists = false;
-            boolean started = false;
 
             // Time Complexity = O(1)
             @Override
             public boolean hasNext() {
-                checkModificationCount();
-                if (!started && next == head)
-                    return head != null;
-                return next != head;
+                if (traverse == null)
+                    return previous == null ? head != null : previous.next != head;
+                return traverse.next != head;
             }
 
             // Time Complexity = O(1)
             @Override
             public E next() {
+                checkModificationCount();
+
                 if (!hasNext())
                     throw new NoSuchElementException();
 
-                previous = traverse;
-                traverse = next;
-                next = next.next;
-                started = true;
+                previous = traverse == null ? previous : traverse;
+                traverse = previous == null ? head : previous.next;
                 var value = traverse.value;
                 currentElementExists = true;
                 return value;
@@ -370,18 +362,18 @@ public class CircularSinglyLinkedList<E> implements List<E> {
             // Time Complexity = O(1)
             @Override
             public void remove() {
-                checkModificationCount();
                 if (!currentElementExists)
                     throw new IllegalStateException();
+
+                checkModificationCount();
+
                 CircularSinglyLinkedList.this.remove(traverse, previous);
+                traverse = null;
                 currentElementExists = false;
                 modificationCount--;
-
             }
 
             private void checkModificationCount() {
-                if (expectedModificationCount == -1)
-                    expectedModificationCount = modificationCount;
                 if (expectedModificationCount != modificationCount)
                     throw new ConcurrentModificationException();
             }
@@ -418,10 +410,14 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     // Time Complexity = O(n)
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
+        if (fromIndex < 0)
+            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+
+        if (toIndex > size)
+            throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+
         if (fromIndex > toIndex)
-            throw new IllegalArgumentException("FromIndex cannot be greater than ToIndex.");
-        if (fromIndex < 0 || toIndex > size)
-            throw new IndexOutOfBoundsException();
+            throw new IllegalArgumentException("fromIndex(%d) > toIndex(%d)".formatted(fromIndex, toIndex));
 
         var list = new CircularSinglyLinkedList<E>();
 
@@ -450,5 +446,36 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        if (this.size() != ((CircularSinglyLinkedList<?>) o).size)
+            return false;
+
+        CircularSinglyLinkedList<?> that = (CircularSinglyLinkedList<?>) o;
+
+        var thisIterator = this.iterator();
+        var thatIterator = that.iterator();
+        while (thisIterator.hasNext())
+            if (!Objects.equals(thisIterator.next(), thatIterator.next()))
+                return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        var hashCode = 0;
+        var count = 0;
+        for (E e : this)
+            hashCode += e.hashCode() * count++;
+
+        return hashCode;
     }
 }
