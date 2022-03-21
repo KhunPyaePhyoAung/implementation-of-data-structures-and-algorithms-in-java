@@ -42,7 +42,7 @@ public class DoublyLinkedList<E> implements List<E> {
     @Override
     public void add(int index, E element) {
         if (index < 0 || index > size)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
         var node = new Node<>(element);
 
@@ -76,7 +76,7 @@ public class DoublyLinkedList<E> implements List<E> {
     public boolean addAll(int index, Collection<? extends E> c) {
 
         if (index < 0 || index > size)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
         if (c.isEmpty())
             return false;
@@ -126,7 +126,7 @@ public class DoublyLinkedList<E> implements List<E> {
     // Time Complexity = O(n)
     private Node<E> getNode(int index) {
         if (index < 0 || index >= size)
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
 
         if (index == 0)
             return head;
@@ -317,26 +317,26 @@ public class DoublyLinkedList<E> implements List<E> {
     public Iterator<E> iterator() {
         return new Iterator<>() {
 
-            long expectedModificationCount = -1;
-            Node<E> traverse = head;
-            Node<E> previous = null;
+            final long expectedModificationCount = modificationCount;
+            Node<E> traverse = null;
             boolean currentElementExists = false;
 
             @Override
             public boolean hasNext() {
-                checkModificationCount();
-                return traverse != null;
+                if (traverse == null)
+                    return head != null;
+                return traverse.next != null;
             }
 
             @Override
             public E next() {
+                checkModificationCount();
 
                 if (!hasNext())
                     throw new NoSuchElementException();
 
-                E value = traverse.value;
-                traverse = traverse.next;
-                previous = traverse;
+                traverse = traverse == null ? head : traverse.next;
+                var value = traverse.value;
                 currentElementExists = true;
                 return value;
             }
@@ -348,17 +348,14 @@ public class DoublyLinkedList<E> implements List<E> {
 
                 checkModificationCount();
 
-                if (previous != null) {
-                    DoublyLinkedList.this.remove(previous);
-                    modificationCount--;
-                }
+                var previous = traverse.previous;
+                DoublyLinkedList.this.remove(traverse);
+                traverse = previous;
+                modificationCount--;
                 currentElementExists = false;
-
             }
 
             private void checkModificationCount() {
-                if (expectedModificationCount == -1)
-                    expectedModificationCount = modificationCount;
                 if (expectedModificationCount != modificationCount)
                     throw new ConcurrentModificationException();
             }
@@ -395,10 +392,15 @@ public class DoublyLinkedList<E> implements List<E> {
     // Time Complexity = O(n)
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
+
+        if (fromIndex < 0)
+            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+
+        if (toIndex > size)
+            throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+
         if (fromIndex > toIndex)
-            throw new IllegalArgumentException("FromIndex cannot be greater than ToIndex.");
-        if (fromIndex < 0 || toIndex > size)
-            throw new IndexOutOfBoundsException();
+            throw new IllegalArgumentException("fromIndex(%d) > toIndex(%d)".formatted(fromIndex, toIndex));
 
         var list = new DoublyLinkedList<E>();
 
@@ -428,5 +430,30 @@ public class DoublyLinkedList<E> implements List<E> {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (!(o instanceof List<?> that) || this.size() != that.size())
+            return false;
+
+        var thisIterator = this.iterator();
+        var tharIterator = that.iterator();
+        while (thisIterator.hasNext())
+            if (!Objects.equals(thisIterator.next(), tharIterator.next()))
+                return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        var hashCode = 1;
+        for (E e : this)
+            hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
+        return hashCode;
     }
 }
