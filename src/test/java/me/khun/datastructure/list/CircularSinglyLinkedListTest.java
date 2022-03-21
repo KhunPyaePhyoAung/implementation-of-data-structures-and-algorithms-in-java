@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CircularSinglyLinkedListTest {
 
     @Test
-    public void test1() {
+    public void testConstructor() {
         List<String> list1 = new CircularSinglyLinkedList<>();
         list1.add("Java");
         list1.add("PHP");

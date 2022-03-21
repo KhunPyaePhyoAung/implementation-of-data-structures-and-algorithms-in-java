@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ArrayListTest {
 
     @Test
-    public void test1() {
+    public void testConstructor() {
         List<Integer> list1 = new ArrayList<>();
         list1.add(-5);
         list1.add(-4);

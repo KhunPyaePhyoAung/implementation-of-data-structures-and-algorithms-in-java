@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CircularDoublyLinkedListTest {
 
     @Test
-    public void test1() {
+    public void testConstructor() {
         List<Integer> list1 = new CircularDoublyLinkedList<>();
         list1.add(10);
         list1.add(20);

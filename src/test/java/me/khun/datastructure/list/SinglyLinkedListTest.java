@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SinglyLinkedListTest {
 
     @Test
-    public void test1() {
+    public void testConstructor() {
         List<Integer> list1 = new SinglyLinkedList<>();
         list1.add(0);
         list1.add(1);
