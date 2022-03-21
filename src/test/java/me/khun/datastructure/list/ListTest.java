@@ -508,6 +508,8 @@ public class ListTest {
         assertFalse(l2Iterator.hasNext());
         l2.add(10);
         assertTrue(l2Iterator.hasNext());
+        l2.remove(Integer.valueOf(10));
+        assertFalse(l2Iterator.hasNext());
 
         var list3Iterator = list3.iterator();
         assertEquals(6, list3Iterator.next());
