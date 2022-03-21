@@ -320,10 +320,19 @@ public class ListTest {
     @Order(16)
     public void testRemoveIndexMethod() {
         assertEquals(-5, list1.remove(0));
+        assertEquals("[-4, -3, -2, -1]", list1.toString());
+
         assertEquals(-4, list1.remove(0));
+        assertEquals("[-3, -2, -1]", list1.toString());
+
         assertEquals(-1, list1.remove(list1.size() - 1));
+        assertEquals("[-3, -2]", list1.toString());
+
         assertEquals(-2, list1.remove(1));
         assertEquals("[-3]", list1.toString());
+
+        assertEquals(-3, list1.remove(0));
+        assertEquals("[]", list1.toString());
     }
 
     @Test
@@ -367,6 +376,19 @@ public class ListTest {
         assertFalse(list0.remove(1.2));
 
         assertEquals("[6, 7, 8, 9, 10, 1, 2, 3, 4, 5]", list0.toString());
+
+        assertTrue(list0.remove(Integer.valueOf(1)));
+        assertTrue(list0.remove(Integer.valueOf(2)));
+        assertTrue(list0.remove(Integer.valueOf(3)));
+        assertTrue(list0.remove(Integer.valueOf(4)));
+        assertTrue(list0.remove(Integer.valueOf(5)));
+        assertTrue(list0.remove(Integer.valueOf(6)));
+        assertTrue(list0.remove(Integer.valueOf(7)));
+        assertTrue(list0.remove(Integer.valueOf(8)));
+        assertTrue(list0.remove(Integer.valueOf(9)));
+        assertTrue(list0.remove(Integer.valueOf(10)));
+
+        assertEquals("[]", list0.toString());
     }
 
     @Test
