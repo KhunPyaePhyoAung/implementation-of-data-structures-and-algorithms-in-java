@@ -442,6 +442,13 @@ public class ListTest {
 
     @Test
     @Order(20)
+    public void testRemoveAllMethodException() {
+        assertThrows(NullPointerException.class, () -> list0.removeAll(null));
+        assertThrows(NullPointerException.class, () -> list1.removeAll(null));
+    }
+
+    @Test
+    @Order(20)
     public void testRetainAllMethod() {
         assertFalse(list0.retainAll(list12));
         assertEquals("[]", list0.toString());
