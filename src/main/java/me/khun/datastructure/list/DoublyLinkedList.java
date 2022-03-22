@@ -437,9 +437,9 @@ public class DoublyLinkedList<E> implements List<E> {
             return false;
 
         var thisIterator = this.iterator();
-        var tharIterator = that.iterator();
+        var thatIterator = that.iterator();
         while (thisIterator.hasNext())
-            if (!Objects.equals(thisIterator.next(), tharIterator.next()))
+            if (!Objects.equals(thisIterator.next(), thatIterator.next()))
                 return false;
 
         return true;
