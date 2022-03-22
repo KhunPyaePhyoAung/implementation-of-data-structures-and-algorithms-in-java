@@ -2,6 +2,7 @@ package me.khun.datastructure.list;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
+import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
 public class ArrayList<E> implements List<E> {
@@ -158,7 +159,7 @@ public class ArrayList<E> implements List<E> {
         return index != -1;
     }
 
-    //Time Complexity : O(n^2)
+    //Time Complexity : O(nm) , m = size of c
     @Override
     public boolean removeAll(Collection<?> c) {
         if (c.isEmpty() || isEmpty())
@@ -171,12 +172,30 @@ public class ArrayList<E> implements List<E> {
             return sizeBefore != size;
         }
 
-        for (Object o : c)
-            for (int i = 0; i < size; i++)
-                if (Objects.equals(o, container[i]))
-                    remove(i--);
+        return removeAllIf(c::contains);
+    }
 
-        return sizeBefore != size;
+    // Time Complexity = O(n) * O(m) , O(m) = Time Complexity of predicate
+    private boolean removeAllIf(Predicate<? super E> predicate) {
+        var sizeBefore = size;
+        var count = 0;
+        var newContainer = new Object[capacity];
+
+        for (int i = 0; i < size; i++) {
+            var value = container[i];
+            if (!predicate.test(value))
+                newContainer[count++] = value;
+        }
+
+        container = (E[]) newContainer;
+        size = count;
+
+        if (sizeBefore != size) {
+            modificationCount++;
+            return true;
+        }
+
+        return false;
     }
 
     //Time Complexity : O(nm), m = size of c
@@ -193,21 +212,7 @@ public class ArrayList<E> implements List<E> {
         if (c == this || isEmpty())
             return false;
 
-
-        var retainedContainer = new Object[capacity];
-        var retainedCount = 0;
-
-        for (E e: container)
-            for (E o : (Collection<? extends E>)c)
-                if (Objects.equals(o, e))
-                    retainedContainer[retainedCount++] = e;
-
-        container = (E[]) retainedContainer;
-        size = retainedCount;
-        if (sizeBefore != size)
-            modificationCount++;
-
-        return sizeBefore != size;
+        return removeAllIf(e -> !c.contains(e));
     }
 
     //Time Complexity : O(1)

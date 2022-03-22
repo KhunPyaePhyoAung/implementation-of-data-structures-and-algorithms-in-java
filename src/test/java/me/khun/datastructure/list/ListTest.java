@@ -886,7 +886,7 @@ public class ListTest {
     }
 
     private <T> List<T> newList(Class<T> type) {
-        return new CircularDoublyLinkedList<>();
+        return new ArrayList<>();
     }
 
 }
