@@ -18,6 +18,8 @@ public class QueueTest {
     private Queue<Integer> queue13;
     private Queue<Integer> queue23;
     private Queue<Integer> queue123;
+    private Queue<Object> objectQueue1;
+    private Queue<Object> objectQueue2;
 
     @BeforeEach
     public void setupQueues() {
@@ -107,6 +109,28 @@ public class QueueTest {
         queue123.add(8);
         queue123.add(9);
         queue123.add(10);
+
+        objectQueue1 = newQueue(Object.class);
+        objectQueue1.add("String");
+        objectQueue1.add(1);
+        objectQueue1.add(false);
+        objectQueue1.add(8);
+        objectQueue1.add(true);
+        objectQueue1.add(15);
+        objectQueue1.add(1.5);
+
+        objectQueue2 = newQueue(Object.class);
+        objectQueue2.add(0);
+        objectQueue2.add(true);
+        objectQueue2.add(1);
+        objectQueue2.add(false);
+        objectQueue2.add(2);
+        objectQueue2.add("String");
+        objectQueue2.add(3);
+        objectQueue2.add(1.2);
+        objectQueue2.add(4);
+        objectQueue2.add('a');
+        objectQueue2.add(5);
     }
 
     @Test
@@ -305,22 +329,13 @@ public class QueueTest {
         assertFalse(queue12.removeAll(queue1));
         assertEquals("[]", queue12.toString());
 
-        assertTrue(queue2.removeAll(queue23));
+        assertFalse(queue1.removeAll(objectQueue1));
+
+        assertTrue(queue2.removeAll(objectQueue2));
         assertEquals("[]", queue2.toString());
 
         assertTrue(queue3.removeAll(queue3));
         assertEquals("[]", queue3.toString());
-
-        var objectQueue = newQueue(Object.class);
-        objectQueue.add("String");
-        objectQueue.add(false);
-        objectQueue.add(true);
-        objectQueue.add(Integer.valueOf(11));
-        objectQueue.add(Integer.valueOf(12));
-        objectQueue.add(null);
-
-        assertTrue(queue4.removeAll(objectQueue));
-        assertEquals("[13, 14, 15]", queue4.toString());
     }
 
     @Test
@@ -431,16 +446,12 @@ public class QueueTest {
         assertTrue(queue23.retainAll(queue1));
         assertEquals("[]", queue23.toString());
 
-        var objectQueue = newQueue(Object.class);
-        objectQueue.add("String");
-        objectQueue.add(false);
-        objectQueue.add(true);
-        objectQueue.add(Integer.valueOf(11));
-        objectQueue.add(Integer.valueOf(12));
-        objectQueue.add(null);
+        assertFalse(queue2.retainAll(objectQueue2));
+        assertTrue(queue2.retainAll(objectQueue1));
+        assertEquals("[1]", queue2.toString());
 
-        assertTrue(queue4.retainAll(objectQueue));
-        assertEquals("[11, 12]", queue4.toString());
+        assertTrue(objectQueue1.retainAll(queue1));
+        assertEquals("[]", objectQueue1.toString());
     }
 
     @Test
@@ -496,6 +507,11 @@ public class QueueTest {
         assertFalse(queue3.containsAll(queue4));
         assertFalse(queue12.containsAll(queue3));
         assertFalse(queue123.containsAll(queue4));
+
+        assertFalse(objectQueue1.containsAll(queue1));
+        assertFalse(objectQueue1.containsAll(queue2));
+        assertFalse(objectQueue2.containsAll(queue1));
+        assertTrue(objectQueue2.containsAll(queue2));
     }
 
     @Test
