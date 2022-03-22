@@ -191,7 +191,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     // Time Complexity = O(nm) , m = size of c
     @Override
     public boolean removeAll(Collection<?> c) {
-        if (isEmpty() || c.isEmpty())
+        if (c.isEmpty() || isEmpty())
             return false;
 
         return removeAllIf(c::contains);

@@ -161,6 +161,8 @@ public class ArrayList<E> implements List<E> {
     //Time Complexity : O(n^2)
     @Override
     public boolean removeAll(Collection<?> c) {
+        if (c.isEmpty() || isEmpty())
+            return false;
 
         var sizeBefore = size;
 
@@ -168,9 +170,6 @@ public class ArrayList<E> implements List<E> {
             clear();
             return sizeBefore != size;
         }
-
-        if (c.isEmpty() || isEmpty())
-            return false;
 
         for (Object o : c)
             for (int i = 0; i < size; i++)

@@ -179,7 +179,7 @@ public class DoublyLinkedList<E> implements List<E> {
     @Override
     public boolean removeAll(Collection<?> c) {
 
-        if (isEmpty() || c.isEmpty())
+        if (c.isEmpty() || isEmpty())
             return false;
 
         var sizeBefore = size;
