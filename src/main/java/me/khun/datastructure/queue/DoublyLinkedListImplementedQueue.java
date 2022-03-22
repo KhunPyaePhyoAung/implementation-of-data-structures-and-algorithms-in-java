@@ -126,4 +126,26 @@ public class DoublyLinkedListImplementedQueue<E> implements Queue<E> {
     public String toString() {
         return list.toString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (!(o instanceof Queue<?> that) || this.size() != that.size())
+            return false;
+
+        var thisIterator = this.iterator();
+        var thatIterator = that.iterator();
+        while (thisIterator.hasNext())
+            if (!Objects.equals(thisIterator.next(), thatIterator.next()))
+                return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return list.hashCode();
+    }
 }
