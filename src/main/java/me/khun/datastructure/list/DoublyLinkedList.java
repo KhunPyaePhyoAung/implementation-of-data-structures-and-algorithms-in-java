@@ -1,6 +1,7 @@
 package me.khun.datastructure.list;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class DoublyLinkedList<E> implements List<E> {
 
@@ -178,17 +179,20 @@ public class DoublyLinkedList<E> implements List<E> {
     // Time Complexity = O(nm) , m = size of c
     @Override
     public boolean removeAll(Collection<?> c) {
-
         if (c.isEmpty() || isEmpty())
             return false;
 
+       return removeAllIf(c::contains);
+    }
+
+    // Time Complexity = O(n) * O(m) , O(m) = Time Complexity of predicate
+    private boolean removeAllIf(Predicate<E> predicate) {
         var sizeBefore = size;
 
         var traverse = head;
-
         while (traverse != null) {
             var next = traverse.next;
-            if (c.contains(traverse.value))
+            if (predicate.test(traverse.value))
                 remove(traverse);
             traverse = next;
         }
@@ -243,15 +247,7 @@ public class DoublyLinkedList<E> implements List<E> {
         if (isEmpty())
             return false;
 
-        var traverse = head;
-        while (traverse != null) {
-            var next = traverse.next;
-            if (!c.contains(traverse.value))
-                remove(traverse);
-            traverse = next;
-        }
-
-        return sizeBefore != size;
+        return removeAllIf(e -> !c.contains(e));
     }
 
     // Time Complexity = O(n)

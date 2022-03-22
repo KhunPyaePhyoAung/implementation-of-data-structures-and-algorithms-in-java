@@ -1,6 +1,7 @@
 package me.khun.datastructure.list;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class CircularDoublyLinkedList<E> implements List<E> {
     private static class Node<E> {
@@ -171,12 +172,20 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         if (c.isEmpty() || isEmpty())
             return false;
 
-        var sizeBefore = size;
+        return removeAllIf(c::contains);
+    }
 
+    // Time Complexity = O(n) * O(m) , O(m) = Time Complexity of predicate
+    private boolean removeAllIf(Predicate<E> predicate) {
+        if (isEmpty())
+            return false;
+
+        var sizeBefore = size;
         var traverse = head;
+
         for (int i = 0; i < sizeBefore; i++) {
             var next = traverse.next;
-            if (c.contains(traverse.value))
+            if (predicate.test(traverse.value))
                 remove(traverse);
             traverse = next;
         }
@@ -220,16 +229,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
             return sizeBefore != size;
         }
 
-        var traverse = head;
-
-        for (int i = 0; i < sizeBefore; i++) {
-            var next = traverse.next;
-            if (!c.contains(traverse.value))
-                remove(traverse);
-            traverse = next;
-        }
-
-        return sizeBefore != size;
+        return removeAllIf(e -> !c.contains(e));
     }
 
     // Time Complexity = O(n)
