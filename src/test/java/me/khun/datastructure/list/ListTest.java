@@ -448,7 +448,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(20)
+    @Order(21)
     public void testRetainAllMethod() {
         assertFalse(list0.retainAll(list12));
         assertEquals("[]", list0.toString());
@@ -484,13 +484,13 @@ public class ListTest {
     }
 
     @Test
-    @Order(21)
+    @Order(22)
     public void testRetainAllMethodException() {
         assertThrows(NullPointerException.class, () -> list1.retainAll(null));
     }
 
     @Test
-    @Order(22)
+    @Order(23)
     public void testIteratorIteration() {
         var l1 = newList(Integer.class);
         var l1Iterator1 = l1.iterator();
@@ -535,7 +535,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(23)
+    @Order(24)
     public void testIteratorRemove() {
         var list1Iterator = list1.iterator();
         while (list1Iterator.hasNext()) {
@@ -560,7 +560,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(24)
+    @Order(25)
     public void testIteratorWithRemoveMethods() {
         var list12Iterator = list12.iterator();
         assertEquals(-5, list12Iterator.next());
@@ -579,7 +579,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(25)
+    @Order(26)
     public void testIteratorWithRetainAllMethod() {
         var list1Iterator = list1.iterator();
         assertEquals(-5, list1Iterator.next());
@@ -591,7 +591,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(26)
+    @Order(27)
     public void testIteratorNoSuchElementException() {
         var list0Iterator = list0.iterator();
         assertThrows(NoSuchElementException.class, list0Iterator::next);
@@ -604,7 +604,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(27)
+    @Order(28)
     public void testIteratorIllegalStateException() {
         var list0Iterator = list0.iterator();
         assertThrows(IllegalStateException.class, list0Iterator::remove);
@@ -630,7 +630,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(28)
+    @Order(29)
     public void testIteratorConcurrentModificationExceptionForAdding() {
         var list0Iterator = list0.iterator();
         list0.add(10);
@@ -663,7 +663,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(29)
+    @Order(30)
     public void testIteratorConcurrentModificationExceptionForRemoving() {
         var list1Iterator = list1.iterator();
         list1.remove(2);
@@ -688,7 +688,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(30)
+    @Order(31)
     public void testIteratorConcurrentModificationExceptionForRetaining() {
         var list12Iterator = list12.iterator();
         assertEquals(-5, list12Iterator.next());
@@ -704,7 +704,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(31)
+    @Order(32)
     public void testIteratorConcurrentModificationExceptionForClearing() {
         var list0Iterator = list0.iterator();
         list0.clear();
@@ -716,7 +716,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(32)
+    @Order(33)
     public void testSubListMethod() {
         assertEquals("[]", list0.subList(0,0).toString());
         assertEquals("[]", list1.subList(0, 0).toString());
@@ -732,7 +732,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(33)
+    @Order(34)
     public void testSubListMethodException() {
         var indexOutOfBoundException = assertThrows(
                 IndexOutOfBoundsException.class,
@@ -771,7 +771,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(34)
+    @Order(35)
     public void testToArrayMethod() {
         assertEquals(Arrays.toString(new Integer[0]), Arrays.toString(list0.toArray()));
         assertEquals(Arrays.toString(new Integer[]{}), Arrays.toString(list0.toArray()));
@@ -780,7 +780,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(35)
+    @Order(36)
     public void testEqualsMethodForEquals() {
         assertEquals(newList(Integer.class), list0);
         assertEquals(newList(Long.class), list0);
@@ -795,7 +795,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(36)
+    @Order(37)
     public void testEqualsMethodForNotEquals() {
         assertNotEquals(list0, list1);
         assertNotEquals(list1, list2);
@@ -825,7 +825,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(37)
+    @Order(38)
     public void testHashCodeForEquals() {
         assertEquals(newList(Integer.class).hashCode(), list0.hashCode());
         assertEquals(newList(Short.class).hashCode(), list0.hashCode());
@@ -852,7 +852,7 @@ public class ListTest {
     }
 
     @Test
-    @Order(38)
+    @Order(39)
     public void testHashCodeForNotEquals() {
         assertNotEquals(list0.hashCode(), list1.hashCode());
         assertNotEquals(list1.hashCode(), list2.hashCode());
