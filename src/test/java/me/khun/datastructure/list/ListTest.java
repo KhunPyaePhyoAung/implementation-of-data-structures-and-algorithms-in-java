@@ -797,6 +797,8 @@ public class ListTest {
     @Test
     @Order(37)
     public void testEqualsMethodForNotEquals() {
+        assertNotEquals(null, list0);
+        assertNotEquals(null, list1);
         assertNotEquals(list0, list1);
         assertNotEquals(list1, list2);
         assertNotEquals(list12, list13);
