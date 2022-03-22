@@ -17,6 +17,8 @@ public class ListTest {
     private List<Integer> list12;
     private List<Integer> list13;
     private List<Integer> list23;
+    private List<Object> objectList1;
+    private List<Object> objectList2;
 
     @BeforeEach
     public void setupLists() {
@@ -89,6 +91,27 @@ public class ListTest {
         list23.add(9);
         list23.add(10);
 
+        objectList1 = newList(Object.class);
+        objectList1.add("String");
+        objectList1.add(1);
+        objectList1.add(false);
+        objectList1.add(8);
+        objectList1.add(true);
+        objectList1.add(15);
+        objectList1.add(1.5);
+
+        objectList2 = newList(Object.class);
+        objectList2.add(0);
+        objectList2.add(true);
+        objectList2.add(1);
+        objectList2.add(false);
+        objectList2.add(2);
+        objectList2.add("String");
+        objectList2.add(3);
+        objectList2.add(1.2);
+        objectList2.add(4);
+        objectList2.add('a');
+        objectList2.add(5);
     }
 
     @Test
@@ -205,6 +228,7 @@ public class ListTest {
     @Test
     @Order(7)
     public void testContainsAllMethod() {
+        assertFalse(list0.containsAll(list1));
         assertTrue(list1.containsAll(list0));
         assertTrue(list2.containsAll(list0));
         assertTrue(list3.containsAll(list0));
@@ -220,17 +244,13 @@ public class ListTest {
         assertFalse(list1.containsAll(list4));
         assertFalse(list1.containsAll(list12));
         assertFalse(list1.containsAll(list13));
-        assertFalse(list2.containsAll(list4));
-        assertFalse(list2.containsAll(list12));
-        assertFalse(list2.containsAll(list23));
-        assertFalse(list3.containsAll(list4));
-        assertFalse(list3.containsAll(list13));
-        assertFalse(list3.containsAll(list23));
         assertFalse(list12.containsAll(list4));
         assertFalse(list12.containsAll(list13));
-        assertFalse(list13.containsAll(list4));
-        assertFalse(list13.containsAll(list23));
-        assertFalse(list23.containsAll(list4));
+
+        assertFalse(objectList1.containsAll(list1));
+        assertFalse(objectList1.containsAll(list2));
+        assertFalse(objectList2.containsAll(list1));
+        assertTrue(objectList2.containsAll(list2));
     }
 
     @Test
@@ -438,6 +458,11 @@ public class ListTest {
 
         assertTrue(list4.removeAll(list4));
         assertEquals("[]", list4.toString());
+
+        assertFalse(list1.removeAll(objectList1));
+        assertFalse(list1.removeAll(objectList2));
+        assertTrue(list2.removeAll(objectList2));
+        assertEquals("[]", list2.toString());
     }
 
     @Test
@@ -481,6 +506,15 @@ public class ListTest {
         l1.addAll(list3);
         assertTrue(l1.retainAll(list2));
         assertEquals("[0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5]", l1.toString());
+
+        assertTrue(list1.retainAll(objectList1));
+        assertEquals("[]", list1.toString());
+
+        assertFalse(list2.retainAll(objectList2));
+        assertEquals("[0, 1, 2, 3, 4, 5]", list2.toString());
+
+        assertTrue(list2.retainAll(objectList1));
+        assertEquals("[1]", list2.toString());
     }
 
     @Test
@@ -886,7 +920,7 @@ public class ListTest {
     }
 
     private <T> List<T> newList(Class<T> type) {
-        return new ArrayList<>();
+        return new CircularDoublyLinkedList<>();
     }
 
 }
