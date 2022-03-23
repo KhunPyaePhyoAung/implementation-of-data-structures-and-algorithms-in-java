@@ -64,7 +64,7 @@ public class ListTest {
         assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", list0.toString());
         assertEquals(list12.toString(), list0.toString());
 
-        var l2 = createList(c);
+        var l2 = createList(c, Integer.class);
         l2.add(0);
         l2.add(1);
         l2.add(2);
@@ -450,7 +450,7 @@ public class ListTest {
         assertTrue(list4.retainAll(list12));
         assertEquals("[]", list4.toString());
 
-        var l1 = createList(c);
+        var l1 = createList(c, Integer.class);
         l1.addAll(list23);
         l1.addAll(list1);
         l1.addAll(list2);
@@ -481,7 +481,7 @@ public class ListTest {
     public void testIteratorIteration(Class<? extends List<?>> c) {
         setup(c);
 
-        var l1 = createList(c);
+        var l1 = createList(c, Integer.class);
         var l1Iterator1 = l1.iterator();
 
         assertFalse(l1Iterator1.hasNext());
@@ -499,7 +499,7 @@ public class ListTest {
 
         assertEquals(list1.toString(), l1.toString());
 
-        var l2 = createList(c);
+        var l2 = createList(c, Integer.class);
         var l2Iterator = l2.iterator();
         assertFalse(l2Iterator.hasNext());
         l2.add(10);
@@ -797,10 +797,10 @@ public class ListTest {
     public void testEqualsMethodForEquals(Class<? extends List<?>> c) {
         setup(c);
 
-        assertEquals(createList(c), list0);
-        assertEquals(createList(c), list0);
-        assertEquals(createList(c), list0);
-        assertEquals(createList(c), list0);
+        assertEquals(createList(c, Integer.class), list0);
+        assertEquals(createList(c, Short.class), list0);
+        assertEquals(createList(c, Long.class), list0);
+        assertEquals(createList(c, String.class), list0);
 
         list0.addAll(list1);
         assertEquals(list1, list0);
@@ -822,7 +822,7 @@ public class ListTest {
         assertNotEquals(list23, list12);
         assertNotEquals(list23, list13);
 
-        var l1 = createList(c);
+        var l1 = createList(c, Long.class);
         l1.add(0L);
         l1.add(1L);
         l1.add(2L);
@@ -832,7 +832,7 @@ public class ListTest {
         assertEquals(list2.toString(), l1.toString());
         assertNotEquals(list2, l1);
 
-        var l2 = createList(c);
+        var l2 = createList(c, Short.class);
         l2.add((short) 0);
         l2.add((short) 1);
         l2.add((short) 2);
@@ -848,13 +848,13 @@ public class ListTest {
     public void testHashCodeForEquals(Class<? extends List<?>> c) {
         setup(c);
 
-        assertEquals(createList(c).hashCode(), list0.hashCode());
-        assertEquals(createList(c).hashCode(), list0.hashCode());
-        assertEquals(createList(c).hashCode(), list0.hashCode());
-        assertEquals(createList(c).hashCode(), list0.hashCode());
-        assertEquals(createList(c).hashCode(), list0.hashCode());
+        assertEquals(createList(c, Integer.class).hashCode(), list0.hashCode());
+        assertEquals(createList(c, Short.class).hashCode(), list0.hashCode());
+        assertEquals(createList(c, Long.class).hashCode(), list0.hashCode());
+        assertEquals(createList(c, String.class).hashCode(), list0.hashCode());
+        assertEquals(createList(c, Date.class).hashCode(), list0.hashCode());
 
-        var l1 = createList(c);
+        var l1 = createList(c, Long.class);
         l1.add(0L);
         l1.add(1L);
         l1.add(2L);
@@ -863,7 +863,7 @@ public class ListTest {
         l1.add(5L);
         assertEquals(list2.hashCode(), l1.hashCode());
 
-        var l2 = createList(c);
+        var l2 = createList(c, Short.class);
         l2.add((short) -5);
         l2.add((short) -4);
         l2.add((short) -3);
@@ -887,7 +887,7 @@ public class ListTest {
         list0.add(-2);
         assertNotEquals(list1.hashCode(), list0.hashCode());
 
-        var l1 = createList(c);
+        var l1 = createList(c, String.class);
         l1.add("-5");
         l1.add("-4");
         l1.add("-3");
@@ -896,7 +896,7 @@ public class ListTest {
         assertEquals(list1.toString(), l1.toString());
         assertNotEquals(list1.hashCode(), l1.hashCode());
 
-        var l2 = createList(c);
+        var l2 = createList(c, Long.class);
         l2.add(-5L);
         l2.add(-4L);
         l2.add(-3L);
@@ -906,7 +906,7 @@ public class ListTest {
         assertNotEquals(list1.hashCode(), l2.hashCode());
     }
 
-    private <L extends List, T> List<T> createList(Class<L> list) {
+    private <L extends List, T> List<T> createList(Class<L> list, Class<? extends T> type) {
         if (list == ArrayList.class) {
             return new ArrayList<>();
         } else if (list == SinglyLinkedList.class) {
@@ -932,16 +932,16 @@ public class ListTest {
     }
 
     private <L extends List<?>> void setup(Class<L> c) {
-        list0 = createList(c);
+        list0 = createList(c, Integer.class);
 
-        list1 = createList(c);
+        list1 = createList(c, Integer.class);
         list1.add(-5);
         list1.add(-4);
         list1.add(-3);
         list1.add(-2);
         list1.add(-1);
 
-        list2 = createList(c);
+        list2 = createList(c, Integer.class);
         list2.add(0);
         list2.add(1);
         list2.add(2);
@@ -949,21 +949,21 @@ public class ListTest {
         list2.add(4);
         list2.add(5);
 
-        list3 = createList(c);
+        list3 = createList(c, Integer.class);
         list3.add(6);
         list3.add(7);
         list3.add(8);
         list3.add(9);
         list3.add(10);
 
-        list4 = createList(c);
+        list4 = createList(c, Integer.class);
         list4.add(11);
         list4.add(12);
         list4.add(13);
         list4.add(14);
         list4.add(15);
 
-        list12 = createList(c);
+        list12 = createList(c, Integer.class);
         list12.add(-5);
         list12.add(-4);
         list12.add(-3);
@@ -976,7 +976,7 @@ public class ListTest {
         list12.add(4);
         list12.add(5);
 
-        list13 = createList(c);
+        list13 = createList(c, Integer.class);
         list13.add(-5);
         list13.add(-4);
         list13.add(-3);
@@ -988,7 +988,7 @@ public class ListTest {
         list13.add(9);
         list13.add(10);
 
-        list23 = createList(c);
+        list23 = createList(c, Integer.class);
         list23.add(0);
         list23.add(1);
         list23.add(2);
@@ -1001,7 +1001,7 @@ public class ListTest {
         list23.add(9);
         list23.add(10);
 
-        objectList1 = createList(c);
+        objectList1 = createList(c, Object.class);
         objectList1.add("String");
         objectList1.add(1);
         objectList1.add(false);
@@ -1010,7 +1010,7 @@ public class ListTest {
         objectList1.add(15);
         objectList1.add(1.5);
 
-        objectList2 = createList(c);
+        objectList2 = createList(c, Object.class);
         objectList2.add(0);
         objectList2.add(true);
         objectList2.add(1);
