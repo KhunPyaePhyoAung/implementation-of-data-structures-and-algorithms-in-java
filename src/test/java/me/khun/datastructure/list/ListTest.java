@@ -1,6 +1,9 @@
 package me.khun.datastructure.list;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.*;
 
@@ -20,103 +23,11 @@ public class ListTest {
     private List<Object> objectList1;
     private List<Object> objectList2;
 
-    @BeforeEach
-    public void setupLists() {
-        list0 = newList(Integer.class);
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testAddMethods(Class<? extends List<?>> c) {
+        setup(c);
 
-        list1 = newList(Integer.class);
-        list1.add(-5);
-        list1.add(-4);
-        list1.add(-3);
-        list1.add(-2);
-        list1.add(-1);
-
-        list2 = newList(Integer.class);
-        list2.add(0);
-        list2.add(1);
-        list2.add(2);
-        list2.add(3);
-        list2.add(4);
-        list2.add(5);
-
-        list3 = newList(Integer.class);
-        list3.add(6);
-        list3.add(7);
-        list3.add(8);
-        list3.add(9);
-        list3.add(10);
-
-        list4 = newList(Integer.class);
-        list4.add(11);
-        list4.add(12);
-        list4.add(13);
-        list4.add(14);
-        list4.add(15);
-
-        list12 = newList(Integer.class);
-        list12.add(-5);
-        list12.add(-4);
-        list12.add(-3);
-        list12.add(-2);
-        list12.add(-1);
-        list12.add(0);
-        list12.add(1);
-        list12.add(2);
-        list12.add(3);
-        list12.add(4);
-        list12.add(5);
-
-        list13 = newList(Integer.class);
-        list13.add(-5);
-        list13.add(-4);
-        list13.add(-3);
-        list13.add(-2);
-        list13.add(-1);
-        list13.add(6);
-        list13.add(7);
-        list13.add(8);
-        list13.add(9);
-        list13.add(10);
-
-        list23 = newList(Integer.class);
-        list23.add(0);
-        list23.add(1);
-        list23.add(2);
-        list23.add(3);
-        list23.add(4);
-        list23.add(5);
-        list23.add(6);
-        list23.add(7);
-        list23.add(8);
-        list23.add(9);
-        list23.add(10);
-
-        objectList1 = newList(Object.class);
-        objectList1.add("String");
-        objectList1.add(1);
-        objectList1.add(false);
-        objectList1.add(8);
-        objectList1.add(true);
-        objectList1.add(15);
-        objectList1.add(1.5);
-
-        objectList2 = newList(Object.class);
-        objectList2.add(0);
-        objectList2.add(true);
-        objectList2.add(1);
-        objectList2.add(false);
-        objectList2.add(2);
-        objectList2.add("String");
-        objectList2.add(3);
-        objectList2.add(1.2);
-        objectList2.add(4);
-        objectList2.add('a');
-        objectList2.add(5);
-    }
-
-    @Test
-    @Order(1)
-    public void testAddMethods() {
         list0.add(1);
         list0.add(0, 0);
         list0.add(3);
@@ -127,9 +38,11 @@ public class ListTest {
         assertEquals(list2.toString(), list0.toString());
     }
 
-    @Test
-    @Order(2)
-    public void testAddMethodException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testAddMethodException(Class<? extends List<?>> c) {
+        setup(c);
+
         var exception = assertThrows(IndexOutOfBoundsException.class, () -> list0.add(1, 0));
         assertEquals("Index out of bounds : 1", exception.getMessage());
 
@@ -141,15 +54,17 @@ public class ListTest {
         assertEquals("Index out of bounds : -1", exception.getMessage());
     }
 
-    @Test
-    @Order(3)
-    public void testAddAllMethods() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testAddAllMethods(Class<? extends List<?>> c) {
+        setup(c);
+
         list0.addAll(list1);
         list0.addAll(list2);
         assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", list0.toString());
         assertEquals(list12.toString(), list0.toString());
 
-        var l2 = newList(Integer.class);
+        var l2 = createList(c);
         l2.add(0);
         l2.add(1);
         l2.add(2);
@@ -163,9 +78,11 @@ public class ListTest {
         assertEquals("[0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5]", list2.toString());
     }
 
-    @Test
-    @Order(4)
-    public void testAddAllMethodException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testAddAllMethodException(Class<? extends List<?>> c) {
+        setup(c);
+
         assertThrows(NullPointerException.class, () -> list0.addAll(null));
 
         var exception1 = assertThrows(IndexOutOfBoundsException.class, () -> list0.addAll(1, list1));
@@ -179,9 +96,11 @@ public class ListTest {
         assertEquals("Index out of bounds : -1", exception3.getMessage());
     }
 
-    @Test
-    @Order(5)
-    public void testIndexOfMethods() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIndexOfMethods(Class<? extends List<?>> c) {
+        setup(c);
+
         assertEquals(-1, list0.indexOf(0));
         assertEquals(-1, list0.indexOf(1));
         assertEquals(-1, list0.indexOf(2));
@@ -209,9 +128,11 @@ public class ListTest {
         assertEquals(-1, list2.lastIndexOf("String"));
     }
 
-    @Test
-    @Order(6)
-    public void testContainsMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testContainsMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertTrue(list1.contains(-5));
         assertTrue(list1.contains(-4));
         assertTrue(list1.contains(-3));
@@ -225,9 +146,11 @@ public class ListTest {
         assertTrue(list1.contains(null));
     }
 
-    @Test
-    @Order(7)
-    public void testContainsAllMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testContainsAllMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertFalse(list0.containsAll(list1));
         assertTrue(list1.containsAll(list0));
         assertTrue(list2.containsAll(list0));
@@ -253,15 +176,19 @@ public class ListTest {
         assertTrue(objectList2.containsAll(list2));
     }
 
-    @Test
-    @Order(8)
-    public void testContainsAllMethodException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testContainsAllMethodException(Class<? extends List<?>> c) {
+        setup(c);
+
         assertThrows(NullPointerException.class, () -> list1.containsAll(null));
     }
 
-    @Test
-    @Order(9)
-    public void testGetMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testGetMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertEquals(-5, list1.get(0));
         assertEquals(-4, list1.get(1));
         assertEquals(-3, list1.get(2));
@@ -269,9 +196,11 @@ public class ListTest {
         assertEquals(-1, list1.get(4));
     }
 
-    @Test
-    @Order(10)
-    public void testGetMethodException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testGetMethodException(Class<? extends List<?>> c) {
+        setup(c);
+
         var exception = assertThrows(IndexOutOfBoundsException.class, () -> list0.get(0));
         assertEquals("Index out of bounds : 0", exception.getMessage());
 
@@ -282,9 +211,11 @@ public class ListTest {
         assertEquals("Index out of bounds : 5", exception.getMessage());
     }
 
-    @Test
-    @Order(11)
-    public void testSetMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testSetMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertEquals(-5, list1.set(0, 0));
         assertEquals(-4, list1.set(1, 10));
         assertEquals(-3, list1.set(2, 20));
@@ -293,9 +224,11 @@ public class ListTest {
         assertEquals("[0, 10, 20, 30, 40]", list1.toString());
     }
 
-    @Test
-    @Order(12)
-    public void testSetMethodException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testSetMethodException(Class<? extends List<?>> c) {
+        setup(c);
+
         var exception = assertThrows(IndexOutOfBoundsException.class, () -> list0.set(0, -100));
         assertEquals("Index out of bounds : 0", exception.getMessage());
 
@@ -306,9 +239,11 @@ public class ListTest {
         assertEquals("Index out of bounds : 5", exception.getMessage());
     }
 
-    @Test
-    @Order(13)
-    public void testClearMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testClearMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         list0.clear();
         assertEquals(0, list0.size());
         assertEquals("[]", list0.toString());
@@ -319,26 +254,32 @@ public class ListTest {
         assertEquals("[]", list1.toString());
     }
 
-    @Test
-    @Order(14)
-    public void testSizeMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testSizeMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertEquals(0, list0.size());
         assertEquals(5, list1.size());
         assertEquals(6, list2.size());
         assertEquals(11, list12.size());
     }
 
-    @Test
-    @Order(15)
-    public void testIsEmptyMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIsEmptyMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertTrue(list0.isEmpty());
         assertFalse(list1.isEmpty());
         assertFalse(list2.isEmpty());
     }
 
-    @Test
-    @Order(16)
-    public void testRemoveIndexMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testRemoveIndexMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertEquals(-5, list1.remove(0));
         assertEquals("[-4, -3, -2, -1]", list1.toString());
 
@@ -355,9 +296,11 @@ public class ListTest {
         assertEquals("[]", list1.toString());
     }
 
-    @Test
-    @Order(17)
-    public void testRemoveIndexMethodException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testRemoveIndexMethodException(Class<? extends List<?>> c) {
+        setup(c);
+
         var exception = assertThrows(IndexOutOfBoundsException.class, () -> list0.remove(0));
         assertEquals("Index out of bounds : 0", exception.getMessage());
 
@@ -368,9 +311,11 @@ public class ListTest {
         assertEquals("Index out of bounds : 5", exception.getMessage());
     }
 
-    @Test
-    @Order(18)
-    public void testRemoveObjectMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testRemoveObjectMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         list0.addAll(list2);
         list0.addAll(list3);
         list0.addAll(list2);
@@ -411,9 +356,11 @@ public class ListTest {
         assertEquals("[]", list0.toString());
     }
 
-    @Test
-    @Order(19)
-    public void testRemoveAllMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testRemoveAllMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertFalse(list0.removeAll(list12));
         assertEquals("[]", list0.toString());
 
@@ -465,16 +412,20 @@ public class ListTest {
         assertEquals("[]", list2.toString());
     }
 
-    @Test
-    @Order(20)
-    public void testRemoveAllMethodException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testRemoveAllMethodException(Class<? extends List<?>> c) {
+        setup(c);
+
         assertThrows(NullPointerException.class, () -> list0.removeAll(null));
         assertThrows(NullPointerException.class, () -> list1.removeAll(null));
     }
 
-    @Test
-    @Order(21)
-    public void testRetainAllMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testRetainAllMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertFalse(list0.retainAll(list12));
         assertEquals("[]", list0.toString());
 
@@ -499,7 +450,7 @@ public class ListTest {
         assertTrue(list4.retainAll(list12));
         assertEquals("[]", list4.toString());
 
-        var l1 = newList(Integer.class);
+        var l1 = createList(c);
         l1.addAll(list23);
         l1.addAll(list1);
         l1.addAll(list2);
@@ -517,16 +468,20 @@ public class ListTest {
         assertEquals("[1]", list2.toString());
     }
 
-    @Test
-    @Order(22)
-    public void testRetainAllMethodException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testRetainAllMethodException(Class<? extends List<?>> c) {
+        setup(c);
+
         assertThrows(NullPointerException.class, () -> list1.retainAll(null));
     }
 
-    @Test
-    @Order(23)
-    public void testIteratorIteration() {
-        var l1 = newList(Integer.class);
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIteratorIteration(Class<? extends List<?>> c) {
+        setup(c);
+
+        var l1 = createList(c);
         var l1Iterator1 = l1.iterator();
 
         assertFalse(l1Iterator1.hasNext());
@@ -544,7 +499,7 @@ public class ListTest {
 
         assertEquals(list1.toString(), l1.toString());
 
-        var l2 = newList(Integer.class);
+        var l2 = createList(c);
         var l2Iterator = l2.iterator();
         assertFalse(l2Iterator.hasNext());
         l2.add(10);
@@ -568,9 +523,11 @@ public class ListTest {
         assertEquals(11, list4Iterator.next());
     }
 
-    @Test
-    @Order(24)
-    public void testIteratorRemove() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIteratorRemove(Class<? extends List<?>> c) {
+        setup(c);
+
         var list1Iterator = list1.iterator();
         while (list1Iterator.hasNext()) {
             list1Iterator.next();
@@ -593,9 +550,11 @@ public class ListTest {
         assertEquals("[6, 7, 8]", list3.toString());
     }
 
-    @Test
-    @Order(25)
-    public void testIteratorWithRemoveMethods() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIteratorWithRemoveMethods(Class<? extends List<?>> c) {
+        setup(c);
+
         var list12Iterator = list12.iterator();
         assertEquals(-5, list12Iterator.next());
         assertEquals(-4, list12Iterator.next());
@@ -612,9 +571,11 @@ public class ListTest {
         assertEquals(3, list23Iterator.next());
     }
 
-    @Test
-    @Order(26)
-    public void testIteratorWithRetainAllMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIteratorWithRetainAllMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         var list1Iterator = list1.iterator();
         assertEquals(-5, list1Iterator.next());
         assertEquals(-4, list1Iterator.next());
@@ -624,9 +585,11 @@ public class ListTest {
         assertEquals(-1, list1Iterator.next());
     }
 
-    @Test
-    @Order(27)
-    public void testIteratorNoSuchElementException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIteratorNoSuchElementException(Class<? extends List<?>> c) {
+        setup(c);
+
         var list0Iterator = list0.iterator();
         assertThrows(NoSuchElementException.class, list0Iterator::next);
 
@@ -637,9 +600,11 @@ public class ListTest {
         assertThrows(NoSuchElementException.class, list1Iterator::next);
     }
 
-    @Test
-    @Order(28)
-    public void testIteratorIllegalStateException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIteratorIllegalStateException(Class<? extends List<?>> c) {
+        setup(c);
+
         var list0Iterator = list0.iterator();
         assertThrows(IllegalStateException.class, list0Iterator::remove);
 
@@ -660,12 +625,14 @@ public class ListTest {
         assertEquals(6, list3Iterator.next());
         list3Iterator.remove();
         list3.add(100);
-        assertThrows(IllegalStateException.class, () -> list3Iterator.remove());
+        assertThrows(IllegalStateException.class, list3Iterator::remove);
     }
 
-    @Test
-    @Order(29)
-    public void testIteratorConcurrentModificationExceptionForAdding() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIteratorConcurrentModificationExceptionForAdding(Class<? extends List<?>> c) {
+        setup(c);
+
         var list0Iterator = list0.iterator();
         list0.add(10);
         assertThrows(ConcurrentModificationException.class, list0Iterator::next);
@@ -696,9 +663,11 @@ public class ListTest {
         assertThrows(ConcurrentModificationException.class, list4Iterator::next);
     }
 
-    @Test
-    @Order(30)
-    public void testIteratorConcurrentModificationExceptionForRemoving() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIteratorConcurrentModificationExceptionForRemoving(Class<? extends List<?>> c) {
+        setup(c);
+
         var list1Iterator = list1.iterator();
         list1.remove(2);
         list1Iterator.hasNext();
@@ -721,9 +690,11 @@ public class ListTest {
         assertThrows(ConcurrentModificationException.class, list12Iterator::next);
     }
 
-    @Test
-    @Order(31)
-    public void testIteratorConcurrentModificationExceptionForRetaining() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIteratorConcurrentModificationExceptionForRetaining(Class<? extends List<?>> c) {
+        setup(c);
+
         var list12Iterator = list12.iterator();
         assertEquals(-5, list12Iterator.next());
         assertEquals(-4, list12Iterator.next());
@@ -737,9 +708,11 @@ public class ListTest {
         assertThrows(ConcurrentModificationException.class, list13Iterator::next);
     }
 
-    @Test
-    @Order(32)
-    public void testIteratorConcurrentModificationExceptionForClearing() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testIteratorConcurrentModificationExceptionForClearing(Class<? extends List<?>> c) {
+        setup(c);
+
         var list0Iterator = list0.iterator();
         list0.clear();
         assertThrows(ConcurrentModificationException.class, list0Iterator::next);
@@ -749,9 +722,11 @@ public class ListTest {
         assertThrows(ConcurrentModificationException.class, list1Iterator::next);
     }
 
-    @Test
-    @Order(33)
-    public void testSubListMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testSubListMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertEquals("[]", list0.subList(0,0).toString());
         assertEquals("[]", list1.subList(0, 0).toString());
         assertEquals("[-5]", list1.subList(0, 1).toString());
@@ -765,9 +740,11 @@ public class ListTest {
         assertEquals("[]", list1.subList(5, 5).toString());
     }
 
-    @Test
-    @Order(34)
-    public void testSubListMethodException() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testSubListMethodException(Class<? extends List<?>> c) {
+        setup(c);
+
         var indexOutOfBoundException = assertThrows(
                 IndexOutOfBoundsException.class,
                 () -> list0.subList(0, 1));
@@ -804,22 +781,26 @@ public class ListTest {
         assertEquals("fromIndex(4) > toIndex(3)", illegalArgException.getMessage());
     }
 
-    @Test
-    @Order(35)
-    public void testToArrayMethod() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testToArrayMethod(Class<? extends List<?>> c) {
+        setup(c);
+
         assertEquals(Arrays.toString(new Integer[0]), Arrays.toString(list0.toArray()));
         assertEquals(Arrays.toString(new Integer[]{}), Arrays.toString(list0.toArray()));
         assertEquals(Arrays.toString(new Integer[]{-5, -4, -3, -2, -1}), Arrays.toString(list1.toArray()));
         assertEquals(Arrays.toString(new Integer[]{0, 1, 2, 3, 4, 5}), Arrays.toString(list2.toArray()));
     }
 
-    @Test
-    @Order(36)
-    public void testEqualsMethodForEquals() {
-        assertEquals(newList(Integer.class), list0);
-        assertEquals(newList(Long.class), list0);
-        assertEquals(newList(Short.class), list0);
-        assertEquals(newList(String.class), list0);
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testEqualsMethodForEquals(Class<? extends List<?>> c) {
+        setup(c);
+
+        assertEquals(createList(c), list0);
+        assertEquals(createList(c), list0);
+        assertEquals(createList(c), list0);
+        assertEquals(createList(c), list0);
 
         list0.addAll(list1);
         assertEquals(list1, list0);
@@ -828,9 +809,11 @@ public class ListTest {
         assertEquals(list12, list0);
     }
 
-    @Test
-    @Order(37)
-    public void testEqualsMethodForNotEquals() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testEqualsMethodForNotEquals(Class<? extends List<?>> c) {
+        setup(c);
+
         assertNotEquals(null, list0);
         assertNotEquals(null, list1);
         assertNotEquals(list0, list1);
@@ -839,7 +822,7 @@ public class ListTest {
         assertNotEquals(list23, list12);
         assertNotEquals(list23, list13);
 
-        var l1 = newList(Long.class);
+        var l1 = createList(c);
         l1.add(0L);
         l1.add(1L);
         l1.add(2L);
@@ -849,7 +832,7 @@ public class ListTest {
         assertEquals(list2.toString(), l1.toString());
         assertNotEquals(list2, l1);
 
-        var l2 = newList(Short.class);
+        var l2 = createList(c);
         l2.add((short) 0);
         l2.add((short) 1);
         l2.add((short) 2);
@@ -860,16 +843,18 @@ public class ListTest {
         assertNotEquals(list2, l2);
     }
 
-    @Test
-    @Order(38)
-    public void testHashCodeForEquals() {
-        assertEquals(newList(Integer.class).hashCode(), list0.hashCode());
-        assertEquals(newList(Short.class).hashCode(), list0.hashCode());
-        assertEquals(newList(Long.class).hashCode(), list0.hashCode());
-        assertEquals(newList(String.class).hashCode(), list0.hashCode());
-        assertEquals(newList(Date.class).hashCode(), list0.hashCode());
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testHashCodeForEquals(Class<? extends List<?>> c) {
+        setup(c);
 
-        var l1 = newList(Long.class);
+        assertEquals(createList(c).hashCode(), list0.hashCode());
+        assertEquals(createList(c).hashCode(), list0.hashCode());
+        assertEquals(createList(c).hashCode(), list0.hashCode());
+        assertEquals(createList(c).hashCode(), list0.hashCode());
+        assertEquals(createList(c).hashCode(), list0.hashCode());
+
+        var l1 = createList(c);
         l1.add(0L);
         l1.add(1L);
         l1.add(2L);
@@ -878,7 +863,7 @@ public class ListTest {
         l1.add(5L);
         assertEquals(list2.hashCode(), l1.hashCode());
 
-        var l2 = newList(Short.class);
+        var l2 = createList(c);
         l2.add((short) -5);
         l2.add((short) -4);
         l2.add((short) -3);
@@ -887,9 +872,11 @@ public class ListTest {
         assertEquals(list1.hashCode(), l2.hashCode());
     }
 
-    @Test
-    @Order(39)
-    public void testHashCodeForNotEquals() {
+    @ParameterizedTest
+    @MethodSource(value = "getListClasses")
+    public void testHashCodeForNotEquals(Class<? extends List<?>> c) {
+        setup(c);
+
         assertNotEquals(list0.hashCode(), list1.hashCode());
         assertNotEquals(list1.hashCode(), list2.hashCode());
 
@@ -900,7 +887,7 @@ public class ListTest {
         list0.add(-2);
         assertNotEquals(list1.hashCode(), list0.hashCode());
 
-        var l1 = newList(String.class);
+        var l1 = createList(c);
         l1.add("-5");
         l1.add("-4");
         l1.add("-3");
@@ -909,7 +896,7 @@ public class ListTest {
         assertEquals(list1.toString(), l1.toString());
         assertNotEquals(list1.hashCode(), l1.hashCode());
 
-        var l2 = newList(Long.class);
+        var l2 = createList(c);
         l2.add(-5L);
         l2.add(-4L);
         l2.add(-3L);
@@ -919,8 +906,122 @@ public class ListTest {
         assertNotEquals(list1.hashCode(), l2.hashCode());
     }
 
-    private <T> List<T> newList(Class<T> type) {
-        return new CircularDoublyLinkedList<>();
+    private <L extends List, T> List<T> createList(Class<L> list) {
+        if (list == ArrayList.class) {
+            return new ArrayList<>();
+        } else if (list == SinglyLinkedList.class) {
+            return new SinglyLinkedList<>();
+        } else if (list == CircularSinglyLinkedList.class) {
+            return new CircularSinglyLinkedList<>();
+        } else if (list == DoublyLinkedList.class) {
+            return new DoublyLinkedList<>();
+        } else if (list == CircularDoublyLinkedList.class) {
+            return new CircularDoublyLinkedList<>();
+        }
+
+        throw new IllegalArgumentException();
+    }
+
+    private static List<Class<? extends List>> getListClasses() {
+        return List.of(ArrayList.class,
+                        SinglyLinkedList.class,
+                        CircularSinglyLinkedList.class,
+                        DoublyLinkedList.class,
+                        CircularDoublyLinkedList.class
+                );
+    }
+
+    private <L extends List<?>> void setup(Class<L> c) {
+        list0 = createList(c);
+
+        list1 = createList(c);
+        list1.add(-5);
+        list1.add(-4);
+        list1.add(-3);
+        list1.add(-2);
+        list1.add(-1);
+
+        list2 = createList(c);
+        list2.add(0);
+        list2.add(1);
+        list2.add(2);
+        list2.add(3);
+        list2.add(4);
+        list2.add(5);
+
+        list3 = createList(c);
+        list3.add(6);
+        list3.add(7);
+        list3.add(8);
+        list3.add(9);
+        list3.add(10);
+
+        list4 = createList(c);
+        list4.add(11);
+        list4.add(12);
+        list4.add(13);
+        list4.add(14);
+        list4.add(15);
+
+        list12 = createList(c);
+        list12.add(-5);
+        list12.add(-4);
+        list12.add(-3);
+        list12.add(-2);
+        list12.add(-1);
+        list12.add(0);
+        list12.add(1);
+        list12.add(2);
+        list12.add(3);
+        list12.add(4);
+        list12.add(5);
+
+        list13 = createList(c);
+        list13.add(-5);
+        list13.add(-4);
+        list13.add(-3);
+        list13.add(-2);
+        list13.add(-1);
+        list13.add(6);
+        list13.add(7);
+        list13.add(8);
+        list13.add(9);
+        list13.add(10);
+
+        list23 = createList(c);
+        list23.add(0);
+        list23.add(1);
+        list23.add(2);
+        list23.add(3);
+        list23.add(4);
+        list23.add(5);
+        list23.add(6);
+        list23.add(7);
+        list23.add(8);
+        list23.add(9);
+        list23.add(10);
+
+        objectList1 = createList(c);
+        objectList1.add("String");
+        objectList1.add(1);
+        objectList1.add(false);
+        objectList1.add(8);
+        objectList1.add(true);
+        objectList1.add(15);
+        objectList1.add(1.5);
+
+        objectList2 = createList(c);
+        objectList2.add(0);
+        objectList2.add(true);
+        objectList2.add(1);
+        objectList2.add(false);
+        objectList2.add(2);
+        objectList2.add("String");
+        objectList2.add(3);
+        objectList2.add(1.2);
+        objectList2.add(4);
+        objectList2.add('a');
+        objectList2.add(5);
     }
 
 }
