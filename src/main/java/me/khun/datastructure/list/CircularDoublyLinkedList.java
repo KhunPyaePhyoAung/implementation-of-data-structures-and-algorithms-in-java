@@ -4,44 +4,55 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class CircularDoublyLinkedList<E> implements List<E> {
-    private static class Node<E> {
-        private Node<E> previous;
-        private Node<E> next;
-        private E value;
 
-        Node(E value) {
+    private static class Node<T> {
+        Node<T> previous;
+        Node<T> next;
+        T value;
+
+        Node(T value) {
             this.value = value;
         }
     }
 
     private Node<E> head;
     private Node<E> tail;
-    private int size;
-    private long modificationCount;
+    private int     size;
+    private long    modificationCount;
 
-    public CircularDoublyLinkedList() {}
+    public CircularDoublyLinkedList() {
+        this.size = 0;
+        this.modificationCount = 0;
+    }
 
     public CircularDoublyLinkedList(Collection<? extends E> c) {
+        this();
         addAll(size, c);
     }
 
-    // Time Complexity = O(1)
+    /*
+     * Time Complexity = O(1)
+     */
     @Override
-    public boolean add(E e) {
-        add(size, e);
+    public boolean add(E element) {
+        add(size, element);
         return true;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public void add(int index, E element) {
-        if (index < 0 || index > size)
+        if ((index < 0) || (index > size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
 
         var node = new Node<>(element);
 
         if (isEmpty()) {
-            head = tail = node;
+            head = node;
+            tail = node;
         } else if (index == 0) {
             linkNodes(node, head);
             head = node;
@@ -59,31 +70,41 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         modificationCount++;
     }
 
-    // Time Complexity = O(m) , m = size of c
+    /*
+     * Time Complexity = O(m)
+     * m = size of c
+     */
     @Override
     public boolean addAll(Collection<? extends E> c) {
         return addAll(size, c);
     }
 
-    // Time Complexity = O(n + m) , m = size of c
+    /*
+     * Time Complexity = O(n + m) , m = size of c
+     */
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
-        if (index < 0 || index > size)
+        if ((index < 0) || (index > size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
 
-        if (c.isEmpty())
+        Objects.requireNonNull(c);
+
+        if (c.isEmpty()) {
             return false;
+        }
 
         Node<E> cHead = null;
         Node<E> cTail = null;
 
+        // Link all elements of Collection c.
         for (E e : c) {
             var node = new Node<>(e);
-            if (cHead == null)
+            if (cHead == null) {
                 cHead = node;
-            else
+            } else {
                 linkNodes(cTail, node);
-
+            }
             cTail = node;
         }
 
@@ -109,54 +130,68 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         return true;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     private Node<E> getNode(int index) {
-        if (index <0 || index >= size)
+        if ((index <0) || (index >= size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
 
-        if (index == 0)
+        if (index == 0) {
             return head;
-        else if (index == size - 1)
+        } else if (index == size - 1) {
             return tail;
+        }
 
         Node<E> traverse;
+        final var HALF_OF_SIZE = size / 2;
 
-        if (index < size / 2) {
+        if (index < HALF_OF_SIZE) {
             traverse = head;
-            for (int i = 0; i < index; i++)
+            for (var i = 0; i < index; i++) {
                 traverse = traverse.next;
+            }
         } else {
             traverse = tail;
-            for (int i = size - 1; i > index; i--)
+            for (var i = size - 1; i > index; i--) {
                 traverse = traverse.previous;
+            }
         }
 
         return traverse;
     }
 
-    private void linkNodes(Node<E> left, Node<E> right) {
-        if (left != null)
-            left.next = right;
-        if (right != null)
-            right.previous = left;
+    private void linkNodes(Node<E> leftNode, Node<E> rightNode) {
+        if (leftNode != null) {
+            leftNode.next = rightNode;
+        }
+        if (rightNode != null) {
+            rightNode.previous = leftNode;
+        }
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public E remove(int index) {
         return remove(getNode(index));
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
-    public boolean remove(Object o) {
-        if (isEmpty())
+    public boolean remove(Object object) {
+        if (isEmpty()) {
             return false;
+        }
 
         var traverse = head;
 
         do {
-            if (Objects.equals(o, traverse.value)) {
+            if (Objects.equals(object, traverse.value)) {
                 remove(traverse);
                 return true;
             }
@@ -166,61 +201,87 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         return false;
     }
 
-    // Time Complexity = O(nm) , m = size of c
+    /*
+     * Time Complexity = O(nm)
+     *  = size of c
+     */
     @Override
     public boolean removeAll(Collection<?> c) {
-        if (c.isEmpty() || isEmpty())
+        Objects.requireNonNull(c);
+
+        if (c.isEmpty() || isEmpty()) {
             return false;
+        }
 
         return removeAllIf(c::contains);
     }
 
-    // Time Complexity = O(n) * O(m) , O(m) = Time Complexity of predicate
-    private boolean removeAllIf(Predicate<E> predicate) {
-        if (isEmpty())
+    /*
+     * Time Complexity = O(n) * O(m)
+     * O(m) = Time Complexity of predicate
+     */
+    private boolean removeAllIf(Predicate<? super E> predicate) {
+        if (isEmpty()) {
             return false;
+        }
 
         var sizeBefore = size;
         var traverse = head;
 
-        for (int i = 0; i < sizeBefore; i++) {
+        for (var i = 0; i < sizeBefore; i++) {
             var next = traverse.next;
-            if (predicate.test(traverse.value))
+
+            if (predicate.test(traverse.value)) {
                 remove(traverse);
+            }
+
             traverse = next;
         }
 
         return sizeBefore != size;
     }
 
-    // Time Complexity = O(1)
+    /*
+     * Time Complexity = O(1)
+     */
     private E remove(Node<E> node) {
         var value = node.value;
 
         if (size == 1) {
-            head = tail = null;
+            head = null ;
+            tail = null;
         } else {
             linkNodes(node.previous, node.next);
 
-            if (node == head)
+            if (node == head) {
                 head = node.next;
-            if (node == tail)
+            }
+
+            if (node == tail) {
                 tail = node.previous;
+            }
         }
 
         node.value = null;
-        node.previous = node.next = node = null;
+        node.previous = null;
+        node.next = null;
+        node = null;
         size--;
         modificationCount++;
+
         return value;
     }
 
-    // Time Complexity = O(nm) , m = size of c
+    /*
+     * Time Complexity = O(nm) , m = size of c
+     */
     @Override
     public boolean retainAll(Collection<?> c) {
+        Objects.requireNonNull(c);
 
-        if (this == c)
+        if (this == c) {
             return false;
+        }
 
         var sizeBefore = size;
 
@@ -232,53 +293,75 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         return removeAllIf(e -> !c.contains(e));
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
-    public int indexOf(Object o) {
+    public int indexOf(Object object) {
         var traverse = head;
-        for (int i = 0; i < size; i++, traverse = traverse.next)
-            if (Objects.equals(o, traverse.value))
+        for (var i = 0; i < size; i++) {
+            if (Objects.equals(object, traverse.value)) {
                 return i;
+            }
+            traverse = traverse.next;
+        }
         return -1;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(Object object) {
         var traverse = tail;
-        for (int i = size - 1; i >= 0; i--,traverse = traverse.previous)
-            if (Objects.equals(o, traverse.value))
+        for (var i = size - 1; i >= 0; i--) {
+            if (Objects.equals(object, traverse.value)) {
                 return i;
+            }
+            traverse = traverse.previous;
+        }
         return -1;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
-    public boolean contains(Object o) {
-        return indexOf(o) != -1;
+    public boolean contains(Object object) {
+        return indexOf(object) != -1;
     }
 
-    // Time Complexity = O(nm) , m = size of c
+    /*
+     * Time Complexity = O(nm)
+     * m = size of c
+     */
     @Override
     public boolean containsAll(Collection<?> c) {
-        for (Object o : c)
-            if (!contains(o))
+        Objects.requireNonNull(c);
+        for (var o : c) {
+            if (!contains(o)) {
                 return false;
+            }
+        }
         return true;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public E get(int index) {
         return getNode(index).value;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public E set(int index, E element) {
-        var node = getNode(index);
-        var value = node.value;
-        node.value = element;
+        var indexNode = getNode(index);
+        var value = indexNode.value;
+        indexNode.value = element;
         return value;
     }
 
@@ -292,13 +375,25 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         return size() == 0;
     }
 
-    // Time Complexity = O(1)
+    /*
+     * Time Complexity = O(1)
+     */
     @Override
     public void clear() {
-        if (head != null)
-            head.previous = head.next = head = null;
-        if (tail != null)
-            tail.previous = tail.next = tail = null;
+        if (head != null) {
+            head.previous = null;
+            head.next = null;
+            head.value = null;
+            head = null;
+        }
+
+        if (tail != null) {
+            tail.previous = null;
+            tail.next = null;
+            tail.value = null;
+            tail = null;
+        }
+
         size = 0;
         modificationCount++;
     }
@@ -306,41 +401,53 @@ public class CircularDoublyLinkedList<E> implements List<E> {
     @Override
     public Iterator<E> iterator() {
         return new Iterator<>() {
+            private final long EXPECTED_MODIFICATION_COUNT = modificationCount;
+            private Node<E> traverse = null;
+            private boolean currentElementExists = false;
 
-            final long expectedModificationCount = modificationCount;
-            Node<E> traverse = null;
-            boolean currentElementExists = false;
-
+            /*
+             * Time Complexity : O(1)
+             */
             @Override
             public boolean hasNext() {
-                if (traverse == null)
-                    return head != null;
-                return traverse.next != head;
+                if (EXPECTED_MODIFICATION_COUNT != modificationCount) {
+                    return false;
+                }
+                return (traverse == null)
+                        ? (head != null)
+                        : (traverse.next != head);
             }
 
+            /*
+             * Time Complexity : O(1)
+             */
             @Override
             public E next() {
-
                 checkModificationCount();
 
-                if (!hasNext())
+                if (!hasNext()) {
                     throw new NoSuchElementException();
+                }
 
-                traverse = traverse == null ? head : traverse.next;
+                traverse = (traverse == null) ? head : traverse.next;
                 var value = traverse.value;
                 currentElementExists = true;
+
                 return value;
             }
 
+            /*
+             * Time Complexity : O(1)
+             */
             @Override
             public void remove() {
-
-                if (!currentElementExists)
+                if (!currentElementExists) {
                     throw new IllegalStateException();
+                }
 
                 checkModificationCount();
 
-                var previous = traverse == head ? null : traverse.previous;
+                var previous = (traverse == head) ? null : traverse.previous;
                 CircularDoublyLinkedList.this.remove(traverse);
                 traverse = previous;
                 modificationCount--;
@@ -348,19 +455,26 @@ public class CircularDoublyLinkedList<E> implements List<E> {
             }
 
             private void checkModificationCount() {
-                if (expectedModificationCount != modificationCount)
+                if (EXPECTED_MODIFICATION_COUNT != modificationCount) {
                     throw new ConcurrentModificationException();
+                }
             }
         };
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public Object[] toArray() {
         var array = new Object[size];
         var traverse = head;
-        for (int i = 0; i < size; i++, traverse = traverse.next)
+
+        for (var i = 0; i < size; i++) {
             array[i] = traverse.value;
+            traverse = traverse.next;
+        }
+
         return array;
     }
 
@@ -379,68 +493,89 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         throw new UnsupportedOperationException();
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-
-        if (fromIndex < 0)
+        if (fromIndex < 0) {
             throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+        }
 
-        if (toIndex > size)
+        if (toIndex > size) {
             throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+        }
 
-        if (fromIndex > toIndex)
+        if (fromIndex > toIndex) {
             throw new IllegalArgumentException("fromIndex(%d) > toIndex(%d)".formatted(fromIndex, toIndex));
+        }
 
         var list = new CircularDoublyLinkedList<E>();
 
-        if (fromIndex == toIndex || isEmpty())
+        if (fromIndex == toIndex) {
             return list;
+        }
 
         var traverse = getNode(fromIndex);
-
-        for (int i = fromIndex; i < toIndex; i++, traverse = traverse.next)
+        for (var i = fromIndex; i < toIndex; i++) {
             list.add(traverse.value);
-
+            traverse = traverse.next;
+        }
         return list;
     }
 
     @Override
     public String toString() {
-        var sb = new StringBuilder();
-        sb.append("[");
-        boolean comma = false;
-        for (E e : this) {
-            if (comma)
-                sb.append(", ");
-            sb.append(e);
-            comma = true;
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.append("[");
+
+        var appendComma = false;
+
+        for (var e : this) {
+            if (appendComma) {
+                stringBuilder.append(", ");
+            }
+            stringBuilder.append(e);
+            appendComma = true;
         }
-        sb.append("]");
-        return sb.toString();
+
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == this)
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
+        }
 
-        if (!(o instanceof List<?> that) || this.size() != that.size())
+        if (!(other instanceof List<?> that) || (this.size() != that.size())) {
             return false;
+        }
 
         var thisIterator = this.iterator();
-        var thatIterator = that.iterator();
-        while (thisIterator.hasNext())
-            if (!Objects.equals(thisIterator.next(), thatIterator.next()))
+        var otherIterator = that.iterator();
+
+        while (thisIterator.hasNext()) {
+            if (!Objects.equals(
+                    thisIterator.next(),
+                    otherIterator.next())
+            ) {
                 return false;
+            }
+        }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         var hashCode = 1;
-        for (E e : this)
+        for (var e : this) {
             hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
+        }
         return hashCode;
     }
 }

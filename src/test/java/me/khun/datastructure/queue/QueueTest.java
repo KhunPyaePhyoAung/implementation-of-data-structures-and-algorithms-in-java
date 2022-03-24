@@ -16,11 +16,163 @@ public class QueueTest {
     private Queue<Integer> queue3;
     private Queue<Integer> queue4;
     private Queue<Integer> queue12;
+    private Queue<Integer> queue1212;
     private Queue<Integer> queue13;
     private Queue<Integer> queue23;
     private Queue<Integer> queue123;
     private Queue<Object> objectQueue1;
     private Queue<Object> objectQueue2;
+
+    private static List<Class<? extends Queue>> getQueueClasses() {
+        return List.of(
+                DoublyLinkedListImplementedQueue.class
+        );
+    }
+
+    private void setup(Class<? extends Queue<?>> q) {
+        queue0 = createQueue(q, Integer.class);
+
+        queue1 = createQueue(q, Integer.class);
+        queue1.add(-5);
+        queue1.add(-4);
+        queue1.add(-3);
+        queue1.add(-2);
+        queue1.add(-1);
+
+        queue2 = createQueue(q, Integer.class);
+        queue2.add(0);
+        queue2.add(1);
+        queue2.add(2);
+        queue2.add(3);
+        queue2.add(4);
+        queue2.add(5);
+
+        queue3 = createQueue(q, Integer.class);
+        queue3.add(6);
+        queue3.add(7);
+        queue3.add(8);
+        queue3.add(9);
+        queue3.add(10);
+
+        queue4 = createQueue(q, Integer.class);
+        queue4.add(11);
+        queue4.add(12);
+        queue4.add(13);
+        queue4.add(14);
+        queue4.add(15);
+
+        queue12 = createQueue(q, Integer.class);
+        queue12.add(-5);
+        queue12.add(-4);
+        queue12.add(-3);
+        queue12.add(-2);
+        queue12.add(-1);
+        queue12.add(0);
+        queue12.add(1);
+        queue12.add(2);
+        queue12.add(3);
+        queue12.add(4);
+        queue12.add(5);
+
+        queue1212 = createQueue(q, Integer.class);
+        queue1212.add(-5);
+        queue1212.add(-4);
+        queue1212.add(-3);
+        queue1212.add(-2);
+        queue1212.add(-1);
+        queue1212.add(0);
+        queue1212.add(1);
+        queue1212.add(2);
+        queue1212.add(3);
+        queue1212.add(4);
+        queue1212.add(5);
+        queue1212.add(-5);
+        queue1212.add(-4);
+        queue1212.add(-3);
+        queue1212.add(-2);
+        queue1212.add(-1);
+        queue1212.add(0);
+        queue1212.add(1);
+        queue1212.add(2);
+        queue1212.add(3);
+        queue1212.add(4);
+        queue1212.add(5);
+
+        queue13 = createQueue(q, Integer.class);
+        queue13.add(-5);
+        queue13.add(-4);
+        queue13.add(-3);
+        queue13.add(-2);
+        queue13.add(-1);
+        queue13.add(6);
+        queue13.add(7);
+        queue13.add(8);
+        queue13.add(9);
+        queue13.add(10);
+
+        queue23 = createQueue(q, Integer.class);
+        queue23.add(0);
+        queue23.add(1);
+        queue23.add(2);
+        queue23.add(3);
+        queue23.add(4);
+        queue23.add(5);
+        queue23.add(6);
+        queue23.add(7);
+        queue23.add(8);
+        queue23.add(9);
+        queue23.add(10);
+
+        queue123 = createQueue(q, Integer.class);
+        queue123.add(-5);
+        queue123.add(-4);
+        queue123.add(-3);
+        queue123.add(-2);
+        queue123.add(-1);
+        queue123.add(0);
+        queue123.add(1);
+        queue123.add(2);
+        queue123.add(3);
+        queue123.add(4);
+        queue123.add(5);
+        queue123.add(6);
+        queue123.add(7);
+        queue123.add(8);
+        queue123.add(9);
+        queue123.add(10);
+
+        objectQueue1 = createQueue(q, Object.class);
+        objectQueue1.add(null);
+        objectQueue1.add("String");
+        objectQueue1.add(1);
+        objectQueue1.add(false);
+        objectQueue1.add(8);
+        objectQueue1.add(true);
+        objectQueue1.add(15);
+        objectQueue1.add(1.5);
+        objectQueue1.add(null);
+
+        objectQueue2 = createQueue(q, Object.class);
+        objectQueue2.add(0);
+        objectQueue2.add(true);
+        objectQueue2.add(1);
+        objectQueue2.add(false);
+        objectQueue2.add(2);
+        objectQueue2.add("String");
+        objectQueue2.add(3);
+        objectQueue2.add(1.2);
+        objectQueue2.add(4);
+        objectQueue2.add('a');
+        objectQueue2.add(5);
+    }
+
+    private <Q extends Queue, T> Queue<T> createQueue(Class<Q> c, Class<? extends T> type) {
+        if (c == DoublyLinkedListImplementedQueue.class) {
+            return new DoublyLinkedListImplementedQueue<>();
+        }
+
+        throw new IllegalArgumentException();
+    }
 
     @ParameterizedTest
     @MethodSource(value = "getQueueClasses")
@@ -81,10 +233,6 @@ public class QueueTest {
         assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", queue1.toString());
         assertEquals(queue12.toString(), queue1.toString());
 
-        assertTrue(queue1.addAll(queue3));
-        assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", queue1.toString());
-        assertEquals(queue123.toString(), queue1.toString());
-
         assertTrue(queue4.addAll(queue4));
         assertEquals("[11, 12, 13, 14, 15, 11, 12, 13, 14, 15]", queue4.toString());
     }
@@ -119,19 +267,11 @@ public class QueueTest {
     @MethodSource(value = "getQueueClasses")
     public void testRemoveMethod(Class<? extends Queue<?>> c) {
         setup(c);
-
         assertEquals(-5, queue1.remove());
         assertEquals(-4, queue1.remove());
         assertEquals(-3, queue1.remove());
         assertEquals(-2, queue1.remove());
         assertEquals(-1, queue1.remove());
-
-        assertEquals(0, queue2.remove());
-        assertEquals(1, queue2.remove());
-        assertEquals(2, queue2.remove());
-        assertEquals(3, queue2.remove());
-        assertEquals(4, queue2.remove());
-        assertEquals(5, queue2.remove());
     }
 
     @ParameterizedTest
@@ -147,14 +287,6 @@ public class QueueTest {
         assertEquals(-2, queue1.remove());
         assertEquals(-1, queue1.remove());
         assertThrows(NoSuchElementException.class, () -> queue1.remove());
-
-        assertEquals(0, queue2.remove());
-        assertEquals(1, queue2.remove());
-        assertEquals(2, queue2.remove());
-        assertEquals(3, queue2.remove());
-        assertEquals(4, queue2.remove());
-        assertEquals(5, queue2.remove());
-        assertThrows(NoSuchElementException.class, () -> queue2.remove());
     }
 
     @ParameterizedTest
@@ -162,48 +294,43 @@ public class QueueTest {
     public void testRemoveObjectMethod(Class<? extends Queue<?>> c) {
         setup(c);
 
-        queue0.add(null);
         assertFalse(queue0.remove(0));
         assertFalse(queue0.remove(1));
         assertFalse(queue0.remove(2));
-        assertTrue(queue0.remove(null));
         assertFalse(queue0.remove(null));
         assertEquals("[]", queue0.toString());
 
-        assertTrue(queue1.remove(-5));
         assertTrue(queue1.remove(-1));
+        assertTrue(queue1.remove(-2));
         assertTrue(queue1.remove(-3));
+        assertTrue(queue1.remove(-4));
+        assertTrue(queue1.remove(-5));
         assertFalse(queue1.remove(-5));
+        assertFalse(queue1.remove(-4));
+        assertFalse(queue1.remove(-2));
         assertFalse(queue1.remove(-3));
         assertFalse(queue1.remove(-1));
         assertFalse(queue1.remove(-10));
         assertFalse(queue1.remove(-20));
-        assertTrue(queue1.remove(-4));
-        assertTrue(queue1.remove(-2));
         assertFalse(queue1.remove(-4));
         assertFalse(queue1.remove(-2));
         assertFalse(queue1.remove(null));
+        assertFalse(queue1.remove("String"));
+        assertFalse(queue1.remove(1.2));
         assertEquals("[]", queue1.toString());
 
-        assertFalse(queue2.remove("String"));
-        assertFalse(queue2.remove(1.2));
-        assertTrue(queue2.remove(1));
-        assertTrue(queue2.remove(2));
-        assertTrue(queue2.remove(3));
-        assertTrue(queue2.remove(4));
-        assertTrue(queue2.remove(5));
-        assertEquals("[0]", queue2.toString());
+        assertTrue(queue1212.remove(0));
+        assertTrue(queue1212.remove(1));
+        assertTrue(queue1212.remove(2));
+        assertTrue(queue1212.remove(3));
+        assertTrue(queue1212.remove(4));
+        assertTrue(queue1212.remove(5));
+        assertEquals("[-5, -4, -3, -2, -1, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", queue1212.toString());
 
-        queue123.addAll(queue3);
-        assertTrue(queue123.remove(6));
-        assertTrue(queue123.remove(7));
-        assertTrue(queue123.remove(8));
-        assertTrue(queue123.remove(9));
-        assertTrue(queue123.remove(10));
-        assertTrue(queue123.remove(6));
-        assertFalse(queue123.remove("String"));
-        assertFalse(queue123.remove(1.2));
-        assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 7, 8, 9, 10]", queue123.toString());
+        assertTrue(objectQueue1.remove(null));
+        assertTrue(objectQueue1.remove(null));
+        assertFalse(objectQueue1.remove(null));
+        assertEquals("[String, 1, false, 8, true, 15, 1.5]", objectQueue1.toString());
     }
 
     @ParameterizedTest
@@ -213,8 +340,6 @@ public class QueueTest {
 
         assertFalse(queue0.removeAll(queue0));
         assertFalse(queue0.removeAll(queue1));
-        assertFalse(queue0.removeAll(queue2));
-        assertFalse(queue0.removeAll(queue3));
         assertEquals("[]", queue0.toString());
 
         assertFalse(queue1.removeAll(queue2));
@@ -226,13 +351,6 @@ public class QueueTest {
         assertEquals("[6, 7, 8, 9, 10]", queue123.toString());
         assertTrue(queue123.removeAll(queue3));
         assertEquals("[]", queue123.toString());
-
-        assertTrue(queue12.removeAll(queue1));
-        assertEquals("[0, 1, 2, 3, 4, 5]", queue12.toString());
-        assertTrue(queue12.removeAll(queue23));
-        assertEquals("[]", queue12.toString());
-        assertFalse(queue12.removeAll(queue1));
-        assertEquals("[]", queue12.toString());
 
         assertFalse(queue1.removeAll(objectQueue1));
 
@@ -247,7 +365,6 @@ public class QueueTest {
     @MethodSource(value = "getQueueClasses")
     public void testRemoveAllMethodException(Class<? extends Queue<?>> c) {
         setup(c);
-
         assertThrows(NullPointerException.class, () -> queue0.removeAll(null));
     }
 
@@ -334,9 +451,6 @@ public class QueueTest {
         assertFalse(queue2.retainAll(queue12));
         assertEquals("[0, 1, 2, 3, 4, 5]", queue2.toString());
 
-        assertFalse(queue12.retainAll(queue123));
-        assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", queue12.toString());
-
         assertTrue(queue123.retainAll(queue12));
         assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", queue123.toString());
 
@@ -358,7 +472,7 @@ public class QueueTest {
         assertTrue(queue12.retainAll(queue0));
         assertEquals("[]", queue12.toString());
 
-        assertTrue(queue23.retainAll(queue1));
+        assertTrue(queue23.retainAll(queue0));
         assertEquals("[]", queue23.toString());
 
         assertFalse(queue2.retainAll(objectQueue2));
@@ -373,7 +487,6 @@ public class QueueTest {
     @MethodSource(value = "getQueueClasses")
     public void testRetainAllMethodException(Class<? extends Queue<?>> c) {
         setup(c);
-
         assertThrows(NullPointerException.class, () -> queue0.retainAll(null));
         assertThrows(NullPointerException.class, () -> queue1.retainAll(null));
     }
@@ -396,12 +509,11 @@ public class QueueTest {
         assertTrue(queue1.contains(-3));
         assertTrue(queue1.contains(-2));
         assertTrue(queue1.contains(-1));
-        queue1.add(null);
-        assertTrue(queue1.contains(null));
+        assertFalse(queue1.contains(null));
+        assertFalse(queue1.contains("String"));
+        assertFalse(queue1.contains(1.2));
 
-        assertFalse(queue2.contains(null));
-        assertFalse(queue2.contains("String"));
-        assertFalse(queue2.contains(1.2));
+        assertTrue(objectQueue1.contains(null));
     }
 
     @ParameterizedTest
@@ -411,23 +523,11 @@ public class QueueTest {
 
         assertTrue(queue0.containsAll(queue0));
         assertTrue(queue1.containsAll(queue0));
-        assertTrue(queue2.containsAll(queue0));
         assertTrue(queue12.containsAll(queue1));
         assertTrue(queue12.containsAll(queue2));
-        assertTrue(queue13.containsAll(queue1));
-        assertTrue(queue13.containsAll(queue3));
-        assertTrue(queue23.containsAll(queue2));
-        assertTrue(queue23.containsAll(queue3));
-        assertTrue(queue123.containsAll(queue1));
-        assertTrue(queue123.containsAll(queue2));
-        assertTrue(queue123.containsAll(queue3));
 
         assertFalse(queue0.containsAll(queue1));
         assertFalse(queue1.containsAll(queue2));
-        assertFalse(queue2.containsAll(queue3));
-        assertFalse(queue3.containsAll(queue4));
-        assertFalse(queue12.containsAll(queue3));
-        assertFalse(queue123.containsAll(queue4));
 
         assertFalse(objectQueue1.containsAll(queue1));
         assertFalse(objectQueue1.containsAll(queue2));
@@ -439,7 +539,6 @@ public class QueueTest {
     @MethodSource(value = "getQueueClasses")
     public void testContainsAllMethodException(Class<? extends Queue<?>> c) {
         setup(c);
-
         assertThrows(NullPointerException.class, () -> queue0.containsAll(null));
         assertThrows(NullPointerException.class, () -> queue1.containsAll(null));
     }
@@ -514,11 +613,10 @@ public class QueueTest {
     @MethodSource(value = "getQueueClasses")
     public void testToArrayMethod(Class<? extends Queue<?>> c) {
         setup(c);
-
-        assertEquals(Arrays.toString(new Integer[0]), Arrays.toString(queue0.toArray()));
-        assertEquals(Arrays.toString(new Integer[]{}), Arrays.toString(queue0.toArray()));
-        assertEquals(Arrays.toString(new Integer[]{-5, -4, -3, -2, -1}), Arrays.toString(queue1.toArray()));
-        assertEquals(Arrays.toString(new Integer[]{0, 1, 2, 3, 4, 5}), Arrays.toString(queue2.toArray()));
+        assertArrayEquals(new Integer[0], queue0.toArray());
+        assertArrayEquals(new Integer[]{}, queue0.toArray());
+        assertArrayEquals(new Integer[]{-5, -4, -3, -2, -1}, queue1.toArray());
+        assertArrayEquals(new Integer[]{0, 1, 2, 3, 4, 5}, queue2.toArray());
     }
 
     @ParameterizedTest
@@ -526,38 +624,29 @@ public class QueueTest {
     public void testIteratorIteration(Class<? extends Queue<?>> c) {
         setup(c);
 
-        var l1 = createQueue(c, Integer.class);
-        var l1Iterator1 = l1.iterator();
-
-        assertFalse(l1Iterator1.hasNext());
-
         var list0Iterator = queue0.iterator();
-        var str = new StringBuilder();
-
-        while (list0Iterator.hasNext())
-            str.append(list0Iterator.next());
-
-        assertEquals("", str.toString());
+        assertFalse(list0Iterator.hasNext());
+        var stringBuilder = new StringBuilder();
+        while (list0Iterator.hasNext()) {
+            stringBuilder.append(list0Iterator.next());
+        }
+        assertEquals("", stringBuilder.toString());
 
         var list1Iterator = queue1.iterator();
+        while (list1Iterator.hasNext()) {
+            queue0.add(list1Iterator.next());
+        }
+        assertEquals(queue1, queue0);
 
-        while (list1Iterator.hasNext())
-            l1.add(list1Iterator.next());
-
-        assertEquals(queue1.toString(), l1.toString());
-
-        var l2 = createQueue(c, Integer.class);
-        var l2Iterator = l2.iterator();
-        assertFalse(l2Iterator.hasNext());
-
-        l2.add(10);
-        assertTrue(l2Iterator.hasNext());
-
-        l2.remove(10);
-        assertFalse(l2Iterator.hasNext());
+        var l1 = createQueue(c, Integer.class);
+        var l1Iterator = l1.iterator();
+        assertFalse(l1Iterator.hasNext());
+        l1.add(10);
+        assertFalse(l1Iterator.hasNext());
+        l1.remove(10);
+        assertFalse(l1Iterator.hasNext());
 
         var list3Iterator = queue3.iterator();
-
         assertEquals(6, list3Iterator.next());
         assertEquals(7, list3Iterator.next());
         assertEquals(8, list3Iterator.next());
@@ -565,12 +654,11 @@ public class QueueTest {
         assertEquals(10, list3Iterator.next());
 
         var list4Iterator = queue4.iterator();
-
-        list4Iterator.hasNext();
-        list4Iterator.hasNext();
-        list4Iterator.hasNext();
-        list4Iterator.hasNext();
-        list4Iterator.hasNext();
+        assertTrue(list4Iterator.hasNext());
+        assertTrue(list4Iterator.hasNext());
+        assertTrue(list4Iterator.hasNext());
+        assertTrue(list4Iterator.hasNext());
+        assertTrue(list4Iterator.hasNext());
         assertEquals(11, list4Iterator.next());
     }
 
@@ -580,25 +668,27 @@ public class QueueTest {
         setup(c);
 
         var list1Iterator = queue1.iterator();
-
         while (list1Iterator.hasNext()) {
             list1Iterator.next();
             list1Iterator.remove();
         }
-
         assertEquals(0, queue1.size());
         assertEquals("[]", queue1.toString());
 
         var list2Iterator = queue2.iterator();
-        while (list2Iterator.hasNext())
-            if (list2Iterator.next() % 2 == 0)
+        while (list2Iterator.hasNext()) {
+            if (list2Iterator.next() % 2 == 0) {
                 list2Iterator.remove();
+            }
+        }
         assertEquals("[1, 3, 5]", queue2.toString());
 
         var list3Iterator = queue3.iterator();
-        while (list3Iterator.hasNext())
-            if (list3Iterator.next() > 8)
+        while (list3Iterator.hasNext()) {
+            if (list3Iterator.next() > 8) {
                 list3Iterator.remove();
+            }
+        }
         assertEquals("[6, 7, 8]", queue3.toString());
     }
 
@@ -631,6 +721,7 @@ public class QueueTest {
         var list1Iterator = queue1.iterator();
         assertEquals(-5, list1Iterator.next());
         assertEquals(-4, list1Iterator.next());
+
         queue1.retainAll(queue12);
         assertEquals(-3, list1Iterator.next());
         assertEquals(-2, list1Iterator.next());
@@ -646,9 +737,9 @@ public class QueueTest {
         assertThrows(NoSuchElementException.class, list0Iterator::next);
 
         var list1Iterator = queue1.iterator();
-        while (list1Iterator.hasNext())
+        while (list1Iterator.hasNext()) {
             list1Iterator.next();
-
+        }
         assertThrows(NoSuchElementException.class, list1Iterator::next);
     }
 
@@ -661,8 +752,8 @@ public class QueueTest {
         assertThrows(IllegalStateException.class, list0Iterator::remove);
 
         var list1Iterator = queue1.iterator();
-        list1Iterator.hasNext();
-        list1Iterator.next();
+        assertTrue(list1Iterator.hasNext());
+        assertEquals(-5, list1Iterator.next());
         list1Iterator.remove();
         assertThrows(IllegalStateException.class, list1Iterator::remove);
 
@@ -690,28 +781,28 @@ public class QueueTest {
         assertThrows(ConcurrentModificationException.class, list0Iterator::next);
 
         var list1Iterator = queue1.iterator();
-        list1Iterator.hasNext();
+        assertTrue(list1Iterator.hasNext());
         queue1.add(10);
         assertThrows(ConcurrentModificationException.class, list1Iterator::next);
 
         var list2Iterator = queue2.iterator();
-        list2Iterator.hasNext();
-        list2Iterator.next();
+        assertTrue(list2Iterator.hasNext());
+        assertEquals(0, list2Iterator.next());
         queue2.add(10);
-        list2Iterator.hasNext();
+        assertFalse(list2Iterator.hasNext());
         assertThrows(ConcurrentModificationException.class, list2Iterator::next);
 
         var list3Iterator = queue3.iterator();
-        list3Iterator.hasNext();
+        assertTrue(list3Iterator.hasNext());
         queue3.addAll(queue1);
-        list3Iterator.hasNext();
+        assertFalse(list3Iterator.hasNext());
         assertThrows(ConcurrentModificationException.class, list3Iterator::next);
 
         var list4Iterator = queue4.iterator();
-        list4Iterator.hasNext();
-        list4Iterator.next();
+        assertTrue(list4Iterator.hasNext());
+        assertEquals(11, list4Iterator.next());
         queue4.addAll(queue1);
-        list4Iterator.hasNext();
+        assertFalse(list4Iterator.hasNext());
         assertThrows(ConcurrentModificationException.class, list4Iterator::next);
     }
 
@@ -722,23 +813,23 @@ public class QueueTest {
 
         var list1Iterator = queue1.iterator();
         queue1.remove(-5);
-        list1Iterator.hasNext();
+        assertFalse(list1Iterator.hasNext());
         assertThrows(ConcurrentModificationException.class, list1Iterator::next);
 
         var list2Iterator = queue2.iterator();
-        list2Iterator.hasNext();
-        list2Iterator.next();
+        assertTrue(list2Iterator.hasNext());
+        assertEquals(0, list2Iterator.next());
         queue2.remove(0);
-        list2Iterator.hasNext();
+        assertFalse(list2Iterator.hasNext());
         assertThrows(ConcurrentModificationException.class, list2Iterator::next);
 
         var list12Iterator = queue12.iterator();
-        list12Iterator.hasNext();
-        list12Iterator.next();
-        list12Iterator.hasNext();
-        list12Iterator.next();
+        assertTrue(list12Iterator.hasNext());
+        assertEquals(-5, list12Iterator.next());
+        assertTrue(list12Iterator.hasNext());
+        assertEquals(-4, list12Iterator.next());
         queue12.removeAll(queue1);
-        list12Iterator.hasNext();
+        assertFalse(list12Iterator.hasNext());
         assertThrows(ConcurrentModificationException.class, list12Iterator::next);
     }
 
@@ -755,9 +846,19 @@ public class QueueTest {
         assertThrows(ConcurrentModificationException.class, list12Iterator::next);
 
         var list13Iterator = queue13.iterator();
+        assertTrue(list13Iterator.hasNext());
         queue13.retainAll(queue1);
-        list13Iterator.hasNext();
+        assertFalse(list13Iterator.hasNext());
         assertThrows(ConcurrentModificationException.class, list13Iterator::next);
+
+        var list23Iterator = queue23.iterator();
+        assertTrue(list23Iterator.hasNext());
+        assertEquals(0, list23Iterator.next());
+        assertEquals(1, list23Iterator.next());
+        assertEquals(2, list23Iterator.next());
+        queue23.retainAll(queue3);
+        assertFalse(list23Iterator.hasNext());
+        assertThrows(ConcurrentModificationException.class, list23Iterator::next);
     }
 
     @ParameterizedTest
@@ -784,11 +885,8 @@ public class QueueTest {
         assertEquals(createQueue(c, Long.class), queue0);
         assertEquals(createQueue(c, String.class), queue0);
 
-        queue0.addAll(queue1);
-        assertEquals(queue1, queue0);
-
-        queue0.addAll(queue2);
-        assertEquals(queue12, queue0);
+        queue12.addAll(queue12);
+        assertEquals(queue1212, queue12);
     }
 
     @ParameterizedTest
@@ -886,130 +984,5 @@ public class QueueTest {
         l2.add(-1L);
         assertEquals(queue1.toString(), l2.toString());
         assertNotEquals(queue1.hashCode(), l2.hashCode());
-    }
-
-    private static List<Class<? extends Queue>> getQueueClasses() {
-        return List.of(
-                    DoublyLinkedListImplementedQueue.class
-                );
-    }
-
-    private <Q extends Queue, T> Queue<T> createQueue(Class<Q> c, Class<? extends T> type) {
-        if (c == DoublyLinkedListImplementedQueue.class) {
-            return new DoublyLinkedListImplementedQueue<>();
-        }
-
-        throw new IllegalArgumentException();
-    }
-
-    private void setup(Class<? extends Queue<?>> q) {
-        queue0 = createQueue(q, Integer.class);
-
-        queue1 = createQueue(q, Integer.class);
-        queue1.add(-5);
-        queue1.add(-4);
-        queue1.add(-3);
-        queue1.add(-2);
-        queue1.add(-1);
-
-        queue2 = createQueue(q, Integer.class);
-        queue2.add(0);
-        queue2.add(1);
-        queue2.add(2);
-        queue2.add(3);
-        queue2.add(4);
-        queue2.add(5);
-
-        queue3 = createQueue(q, Integer.class);
-        queue3.add(6);
-        queue3.add(7);
-        queue3.add(8);
-        queue3.add(9);
-        queue3.add(10);
-
-        queue4 = createQueue(q, Integer.class);
-        queue4.add(11);
-        queue4.add(12);
-        queue4.add(13);
-        queue4.add(14);
-        queue4.add(15);
-
-        queue12 = createQueue(q, Integer.class);
-        queue12.add(-5);
-        queue12.add(-4);
-        queue12.add(-3);
-        queue12.add(-2);
-        queue12.add(-1);
-        queue12.add(0);
-        queue12.add(1);
-        queue12.add(2);
-        queue12.add(3);
-        queue12.add(4);
-        queue12.add(5);
-
-        queue13 = createQueue(q, Integer.class);
-        queue13.add(-5);
-        queue13.add(-4);
-        queue13.add(-3);
-        queue13.add(-2);
-        queue13.add(-1);
-        queue13.add(6);
-        queue13.add(7);
-        queue13.add(8);
-        queue13.add(9);
-        queue13.add(10);
-
-        queue23 = createQueue(q, Integer.class);
-        queue23.add(0);
-        queue23.add(1);
-        queue23.add(2);
-        queue23.add(3);
-        queue23.add(4);
-        queue23.add(5);
-        queue23.add(6);
-        queue23.add(7);
-        queue23.add(8);
-        queue23.add(9);
-        queue23.add(10);
-
-        queue123 = createQueue(q, Integer.class);
-        queue123.add(-5);
-        queue123.add(-4);
-        queue123.add(-3);
-        queue123.add(-2);
-        queue123.add(-1);
-        queue123.add(0);
-        queue123.add(1);
-        queue123.add(2);
-        queue123.add(3);
-        queue123.add(4);
-        queue123.add(5);
-        queue123.add(6);
-        queue123.add(7);
-        queue123.add(8);
-        queue123.add(9);
-        queue123.add(10);
-
-        objectQueue1 = createQueue(q, Object.class);
-        objectQueue1.add("String");
-        objectQueue1.add(1);
-        objectQueue1.add(false);
-        objectQueue1.add(8);
-        objectQueue1.add(true);
-        objectQueue1.add(15);
-        objectQueue1.add(1.5);
-
-        objectQueue2 = createQueue(q, Object.class);
-        objectQueue2.add(0);
-        objectQueue2.add(true);
-        objectQueue2.add(1);
-        objectQueue2.add(false);
-        objectQueue2.add(2);
-        objectQueue2.add("String");
-        objectQueue2.add(3);
-        objectQueue2.add(1.2);
-        objectQueue2.add(4);
-        objectQueue2.add('a');
-        objectQueue2.add(5);
     }
 }

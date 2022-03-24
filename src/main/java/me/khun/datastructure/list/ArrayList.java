@@ -1,26 +1,26 @@
 package me.khun.datastructure.list;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
 public class ArrayList<E> implements List<E> {
 
-    private E[] container;
     private static final int DEFAULT_CAPACITY = 10;
-    private int size;
-    private int capacity;
-    private long modificationCount;
+
+    private E[]     container;
+    private int     size;
+    private int     capacity;
+    private long    modificationCount;
 
     public ArrayList() {
         this(DEFAULT_CAPACITY);
     }
 
     public ArrayList(int initialCapacity) {
-
-        if (initialCapacity < 0)
+        if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal initial capacity : " + initialCapacity);
+        }
 
         this.capacity = initialCapacity;
         this.container = (E[]) new Object[this.capacity];
@@ -33,116 +33,168 @@ public class ArrayList<E> implements List<E> {
         addAll(c);
     }
 
-    //Time Complexity : O(n)
+    /*
+     * Time Complexity : O(n)
+     */
     @Override
-    public boolean add(E e) {
-        add(size, e);
+    public boolean add(E element) {
+        add(size, element);
         return true;
     }
 
-    //Time Complexity : O(n)
+    /*
+     * Time Complexity : O(n)
+     */
     @Override
     public void add(int index, E element) {
-
-        if (index < 0 || index > size)
+        if ((index < 0) || (index > size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
 
         var newSize = size + 1;
 
-        if (newSize > capacity)
-            container = copySkip(container, (E[]) new Object[capacity = newCapacity(newSize)], index, 1, size);
-        else
-            System.arraycopy(container, index, container, index + 1, size - index);
+        if (newSize > capacity) {
+            capacity = getIncreasedCapacity(newSize);
+            container = copySkip(container, (E[]) new Object[capacity], index, 1, size);
+        } else {
+            var destinationPosition = index + 1;
+            var length = size - index;
+            System.arraycopy(container, index, container, destinationPosition, length);
+        }
 
         container[index] = element;
         size++;
         modificationCount++;
     }
 
-    //Time Complexity : O(n + m), m = size of c
+    /*
+     * Time Complexity : O(n + m)
+     * m = size of c
+     */
     @Override
     public boolean addAll(Collection<? extends E> c) {
         return addAll(size, c);
     }
 
-    //Time Complexity : O(n + m), m = size of c
+    /*
+     * Time Complexity : O(n + m)
+     * m = size of c
+     */
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
-
-        if (index < 0 || index > size)
+        if ((index < 0) || (index > size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
 
-        if (c.isEmpty())
+        Objects.requireNonNull(c);
+
+        if (c.isEmpty()) {
             return false;
+        }
 
         var newSize = size + c.size();
-
-        if (newSize > capacity)
-            container = copySkip(container, (E[]) new Object[capacity = newCapacity(newSize)], index, c.size(), size);
-        else
-            System.arraycopy(container, index, container, index + c.size(), size - index);
-
         var addIndex = index;
-        for (E e : c)
+
+        if (newSize > capacity) {
+            capacity = getIncreasedCapacity((newSize));
+            container = copySkip(container, (E[]) new Object[capacity], index, c.size(), size);
+        } else {
+            var destinationPosition = index + c.size();
+            var length = size - index;
+            System.arraycopy(container, index, container, destinationPosition, length);
+        }
+
+        for (var e : c) {
             container[addIndex++] = e;
+        }
 
         size = newSize;
         modificationCount++;
-
         return true;
     }
 
-    private E[] copySkip(E[] src, E[] des, int desSkipFrom, int desSkipLength, int length) {
 
+    /**
+     * Copies elements from the source array to the destination array
+     * skipping sequential positions in the destination array.
+     *
+     * @param src the source array.
+     * @param des the destination array.
+     * @param desSkipFrom starting position to be skipped.
+     * @param desSkipLength the number of positions to be skipped.
+     * @param length the number of array elements to be copied.
+     * @return the destination array.
+     */
+    private E[] copySkip(E[] src, E[] des, int desSkipFrom, int desSkipLength, int length) {
         System.arraycopy(src, 0, des, 0, desSkipFrom);
         System.arraycopy(src, desSkipFrom, des, desSkipFrom + desSkipLength, length - desSkipFrom);
         return des;
     }
 
-    private int newCapacity(int min) {
-        var newCapacity =  capacity < min ? Math.max((capacity + (capacity >> 1)), min) : capacity;
-        if (newCapacity < capacity)
+    private int getIncreasedCapacity(int minCapacity) {
+        var newCapacity =  (capacity < minCapacity)
+                                ? Math.max((capacity + (capacity >> 1)), minCapacity)
+                                : capacity;
+
+        if (newCapacity < capacity) {
             throw new OutOfMemoryError();
+        }
+
         return newCapacity;
     }
 
-    //Time Complexity : O(1)
+    /*
+     * Time Complexity : O(1)
+     */
     @Override
     public int size() {
         return size;
     }
 
-    //Time Complexity : O(1)
+    /*
+     * Time Complexity : O(1)
+     */
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
-    //Time Complexity : O(n)
+    /*
+     * Time Complexity : O(n)
+     */
     @Override
-    public boolean contains(Object o) {
-        return indexOf(o) != -1;
+    public boolean contains(Object object) {
+        return indexOf(object) != -1;
     }
 
-    //Time Complexity : O(nm), m = size of c
+    /*
+     * Time Complexity : O(nm)
+     * m = size of c
+     */
     @Override
     public boolean containsAll(Collection<?> c) {
-        for (Object o : c)
-            if (!contains(o))
+        Objects.requireNonNull(c);
+        for (var o : c) {
+            if (!contains(o)) {
                 return false;
+            }
+        }
         return true;
     }
 
-    //Time Complexity : O(n)
+    /*
+     * Time Complexity : O(n)
+     */
     @Override
     public E remove(int index) {
-
-        if (index < 0 || index >= size)
+        if ((index < 0) || (index >= size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
 
-        E value = get(index);
+        var value = get(index);
+        var length = size - index - 1;
 
-        System.arraycopy(container, index + 1, container, index, size - index - 1);
+        System.arraycopy(container, index + 1, container, index, length);
 
         container[--size] = null;
         modificationCount++;
@@ -150,20 +202,30 @@ public class ArrayList<E> implements List<E> {
         return value;
     }
 
-    //Time Complexity : O(n)
+    /*
+     * Time Complexity : O(n)
+     */
     @Override
-    public boolean remove(Object o) {
-        final var index = indexOf(o);
-        if (index != -1)
+    public boolean remove(Object object) {
+        var index = indexOf(object);
+        if (index != -1) {
             remove(index);
-        return index != -1;
+            return true;
+        }
+        return false;
     }
 
-    //Time Complexity : O(nm) , m = size of c
+    /*
+     * Time Complexity : O(nm)
+     * m = size of c
+     */
     @Override
     public boolean removeAll(Collection<?> c) {
-        if (c.isEmpty() || isEmpty())
+        Objects.requireNonNull(c);
+
+        if (c.isEmpty() || isEmpty()) {
             return false;
+        }
 
         var sizeBefore = size;
 
@@ -175,20 +237,29 @@ public class ArrayList<E> implements List<E> {
         return removeAllIf(c::contains);
     }
 
-    // Time Complexity = O(n) * O(m) , O(m) = Time Complexity of predicate
+    /*
+     * Time Complexity = O(n) * O(m)
+     * O(m) = Time Complexity of predicate
+     */
     private boolean removeAllIf(Predicate<? super E> predicate) {
-        var sizeBefore = size;
-        var count = 0;
-        var newContainer = new Object[capacity];
-
-        for (int i = 0; i < size; i++) {
-            var value = container[i];
-            if (!predicate.test(value))
-                newContainer[count++] = value;
+        if (isEmpty()) {
+            return false;
         }
 
-        container = (E[]) newContainer;
-        size = count;
+        var sizeBefore = size;
+        var retainedCount = 0;
+        var retainedContainer = (E[]) new Object[capacity];
+
+        for (var i = 0; i < size; i++) {
+            var currentElement = container[i];
+
+            if (!predicate.test(currentElement)) {
+                retainedContainer[retainedCount++] = currentElement;
+            }
+        }
+
+        container = retainedContainer;
+        size = retainedCount;
 
         if (sizeBefore != size) {
             modificationCount++;
@@ -198,9 +269,13 @@ public class ArrayList<E> implements List<E> {
         return false;
     }
 
-    //Time Complexity : O(nm), m = size of c
+    /*
+     * Time Complexity : O(nm)
+     * m = size of c
+     */
     @Override
     public boolean retainAll(Collection<?> c) {
+        Objects.requireNonNull(c);
 
         var sizeBefore = size;
 
@@ -209,109 +284,139 @@ public class ArrayList<E> implements List<E> {
             return sizeBefore != size;
         }
 
-        if (c == this || isEmpty())
+        if ((this == c) || isEmpty()) {
             return false;
+        }
 
         return removeAllIf(e -> !c.contains(e));
     }
 
-    //Time Complexity : O(1)
+    /*
+     * Time Complexity : O(1)
+     */
     @Override
     public E get(int index) {
-        if (index < 0 || index >= size)
+        if ((index < 0) || (index >= size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
         return container[index];
     }
 
-    //Time Complexity : O(1)
+    /*
+     * Time Complexity : O(1)
+     */
     @Override
     public E set(int index, E element) {
-        E value = get(index);
+        var value = get(index);
         container[index] = element;
         return value;
     }
 
-
-    //Time Complexity : O(n)
+    /*
+     * Time Complexity : O(n)
+     */
     @Override
-    public int indexOf(Object o) {
-        for (int i = 0; i < size; i++)
-            if (Objects.equals(o, container[i]))
+    public int indexOf(Object object) {
+        for (var i = 0; i < size; i++) {
+            if (Objects.equals(object, container[i])) {
                 return i;
+            }
+        }
         return -1;
     }
 
-    //Time Complexity : O(n)
+    /*
+     * Time Complexity : O(n)
+     */
     @Override
-    public int lastIndexOf(Object o) {
-        for (int i = size - 1; i >= 0; i--)
-            if (Objects.equals(o, container[i]))
+    public int lastIndexOf(Object object) {
+        for (var i = size - 1; i >= 0; i--) {
+            if (Objects.equals(object, container[i])) {
                 return i;
+            }
+        }
         return -1;
     }
 
-    //Time Complexity : O(n)
+    /*
+     * Time Complexity : O(n)
+     */
     @Override
     public void clear() {
-        for (int i = 0; i < size; i++)
+        for (var i = 0; i < size; i++) {
             container[i] = null;
+        }
         size = 0;
         modificationCount++;
     }
 
-    //Time Complexity : O(1)
+    /*
+     * Time Complexity : O(1)
+     */
     @Override
     public Iterator<E> iterator() {
-
         return new Iterator<>() {
+            private final long EXPECTED_MODIFICATION_COUNT = modificationCount;
+            private int currentIndex = 0;
+            private boolean currentElementExists = false;
 
-            int currentIndex = 0;
-            final long expectedModificationCount = modificationCount;
-            boolean currentElementExists = false;
-
+            /*
+             * Time Complexity : O(1)
+             */
             @Override
             public boolean hasNext() {
+                if (EXPECTED_MODIFICATION_COUNT != modificationCount) {
+                    return false;
+                }
                 return currentIndex < size;
             }
 
+            /*
+             * Time Complexity : O(1)
+             */
             @Override
             public E next() {
-
                 checkModificationCount();
 
-                if (!hasNext())
+                if (!hasNext()) {
                     throw new NoSuchElementException("No Such Element.");
+                }
 
                 currentElementExists = true;
 
                 return container[currentIndex++];
             }
 
+            /*
+             * Time Complexity : O(n)
+             */
             @Override
             public void remove() {
-
-                if (!currentElementExists)
+                if (!currentElementExists) {
                     throw new IllegalStateException();
+                }
 
                 checkModificationCount();
 
                 var removeIndex = currentIndex - 1;
 
                 ArrayList.this.remove(removeIndex);
+                currentElementExists = false;
                 modificationCount--;
                 currentIndex--;
-                currentElementExists = false;
-
             }
 
             private void checkModificationCount() {
-                if (expectedModificationCount != modificationCount)
-                    throw new ConcurrentModificationException("Concurrent Modification Occurred.");
+                if (EXPECTED_MODIFICATION_COUNT != modificationCount) {
+                    throw new ConcurrentModificationException();
+                }
             }
         };
     }
 
-    //Time Complexity : O(n)
+    /*
+     * Time Complexity : O(n)
+     */
     @Override
     public Object[] toArray() {
         return Arrays.copyOf(container, size);
@@ -319,7 +424,7 @@ public class ArrayList<E> implements List<E> {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException("Unsupported operation");
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -332,58 +437,85 @@ public class ArrayList<E> implements List<E> {
         throw new UnsupportedOperationException();
     }
 
-    //Time Complexity : O(n)
+    /*
+     * Time Complexity : O(n)
+     */
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-        if (fromIndex < 0)
+        if (fromIndex < 0) {
             throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-        if (toIndex > size)
+        }
+
+        if (toIndex > size) {
             throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-        if (fromIndex > toIndex)
+        }
+
+        if (fromIndex > toIndex) {
             throw new IllegalArgumentException("fromIndex(%d) > toIndex(%d)".formatted(fromIndex, toIndex));
+        }
 
-        var list = new ArrayList<E>(toIndex - fromIndex);
+        var subList = new CircularSinglyLinkedList<E>();
 
-        for (int i = fromIndex; i < toIndex; i++)
-            list.add(get(i));
+        if (fromIndex == toIndex) {
+            return subList;
+        }
 
-        return list;
+        for (var i = fromIndex; i < toIndex; i++) {
+            subList.add(get(i));
+        }
+
+        return subList;
     }
 
     @Override
     public String toString() {
-        var sb = new StringBuilder();
-        sb.append("[");
-        for (int i = 0; i < size; i++) {
-            if (i != 0)
-                sb.append(", ");
-            sb.append(container[i]);
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.append("[");
+
+        for (var i = 0; i < size; i++) {
+            if (i != 0) {
+                stringBuilder.append(", ");
+            }
+            stringBuilder.append(container[i]);
         }
-        sb.append("]");
-        return sb.toString();
+
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == this)
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
+        }
 
-        if (!(o instanceof List<?> that) || this.size() != ((List<?>) o).size())
+        if (!(other instanceof List<?> otherList) || (this.size() != otherList.size())) {
             return false;
+        }
 
         var thisIterator = this.iterator();
-        var thatIterator = that.iterator();
-        while (thisIterator.hasNext())
-            if (!Objects.equals(thisIterator.next(), thatIterator.next()))
+        var otherIterator = otherList.iterator();
+
+        while (thisIterator.hasNext()) {
+            if (!Objects.equals(
+                    thisIterator.next(),
+                    otherIterator.next())
+            ) {
                 return false;
+            }
+        }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         var hashCode = 1;
-        for (E e : this)
+        for (var e : this) {
             hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
+        }
         return hashCode;
     }
 }

@@ -8,79 +8,104 @@ import java.util.Objects;
 
 public class Stack<E> {
 
-    private final List<E> list = new DoublyLinkedList<>();
+    private final List<E> CONTAINER;
 
-    // Time Complexity = O(1)
-    public E push(E e) {
-        list.add(e);
-        return e;
+    public Stack() {
+        CONTAINER = new DoublyLinkedList<>();
     }
 
-    // Time Complexity = O(1)
+    /*
+     * Time Complexity = O(1)
+     */
+    public E push(E element) {
+        CONTAINER.add(element);
+        return element;
+    }
+
+    /*
+     * Time Complexity = O(1)
+     */
     public E pop() {
-        if (isEmpty())
+        if (isEmpty()) {
             throw new EmptyStackException();
-        return list.remove(list.size() - 1);
+        }
+        return CONTAINER.remove(CONTAINER.size() - 1);
     }
 
-    // Time Complexity = O(1)
+    /*
+     * Time Complexity = O(1)
+     */
     public E peek() {
-        if (isEmpty())
+        if (isEmpty()) {
             throw new EmptyStackException();
-        return list.get(list.size() - 1);
+        }
+        return CONTAINER.get(CONTAINER.size() - 1);
     }
 
-    // Time Complexity = O(n)
-    public int search(E o) {
-        int index = list.lastIndexOf(o);
-        if (index == -1)
+    /*
+     * Time Complexity = O(n)
+     */
+    public int search(E target) {
+        var index = CONTAINER.lastIndexOf(target);
+        if (index == -1) {
             return -1;
-        return list.size() - index;
+        }
+        return CONTAINER.size() - index;
     }
 
-    // Time Complexity = O(1)
+    /*
+     * Time Complexity = O(1)
+     */
     public void clear() {
-        list.clear();
+        CONTAINER.clear();
     }
 
-    // Time Complexity = O(1)
+    /*
+     * Time Complexity = O(1)
+     */
     public boolean isEmpty() {
-        return list.isEmpty();
+        return CONTAINER.isEmpty();
     }
 
-    // Time Complexity = O(1)
+    /*
+     * Time Complexity = O(1)
+     */
     public int size() {
-        return list.size();
+        return CONTAINER.size();
     }
 
     @Override
     public String toString() {
-        return list.toString();
+        return CONTAINER.toString();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
+        }
 
-        if (!(o instanceof Stack<?> that) || this.size() != that.size())
+        if (!(other instanceof Stack<?> otherStack) || (this.size() != otherStack.size())) {
             return false;
+        }
 
-        var thisIterator = this.list.iterator();
-        var thatIterator = that.list.iterator();
+        var thisIterator = this.CONTAINER.iterator();
+        var otherIterator = otherStack.CONTAINER.iterator();
 
-        while (thisIterator.hasNext())
-            if (!Objects.equals(thisIterator.next(), thatIterator.next()))
+        while (thisIterator.hasNext()) {
+            if (!Objects.equals(
+                    thisIterator.next(),
+                    otherIterator.next())
+            ) {
                 return false;
+            }
+        }
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        var hashCode = 1;
-        for (E e : this.list)
-            hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
-        return hashCode;
+        return CONTAINER.hashCode();
     }
 }

@@ -1,27 +1,44 @@
 package me.khun.datastructure.list;
 
 import org.junit.jupiter.api.Test;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CircularSinglyLinkedListTest {
 
     @Test
-    public void testConstructor() {
-        List<String> list1 = new CircularSinglyLinkedList<>();
-        list1.add("Java");
-        list1.add("PHP");
-        list1.add("Python");
-
-        assertEquals("[Java, PHP, Python]", list1.toString());
-
-        List<String> list2 = new CircularSinglyLinkedList<>(list1);
-        list2.add("JavaScript");
-        list2.add(0, "C");
-
-        assertEquals("[C, Java, PHP, Python, JavaScript]", list2.toString());
-
+    public void testDefaultConstructor() {
+        var list = new CircularSinglyLinkedList<Integer>();
+        list.add(-5);
+        list.add(-4);
+        list.add(-3);
+        list.add(-2);
+        list.add(-1);
+        assertEquals("[-5, -4, -3, -2, -1]", list.toString());
     }
 
+    @Test
+    public void testConstructorWithCollection() {
+        var list1 = new CircularSinglyLinkedList<Integer>();
+        list1.add(-5);
+        list1.add(-4);
+        list1.add(-3);
+        list1.add(-2);
+        list1.add(-1);
+        assertEquals("[-5, -4, -3, -2, -1]", list1.toString());
+
+        var list2 = new CircularSinglyLinkedList<Integer>();
+        list2.add(0);
+        list2.add(1);
+        list2.add(2);
+        list2.add(3);
+        list2.add(4);
+        list2.add(5);
+        assertEquals("[0, 1, 2, 3, 4, 5]", list2.toString());
+
+        var list3 = new CircularSinglyLinkedList<>(list1);
+        list3.addAll(list2);
+
+        assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", list3.toString());
+    }
 
 }

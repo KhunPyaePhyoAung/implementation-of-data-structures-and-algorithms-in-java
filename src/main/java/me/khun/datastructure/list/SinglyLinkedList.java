@@ -3,28 +3,26 @@ package me.khun.datastructure.list;
 import java.util.*;
 import java.util.function.Predicate;
 
-@SuppressWarnings("unchecked")
 public class SinglyLinkedList<E> implements List<E> {
 
-    private Node<E> head = null;
-    private Node<E> tail = null;
-    private int size;
-    private long modificationCount;
+    private static class Node<T> {
+        Node<T> next;
+        T value;
 
-    private static class Node<E> {
-
-        Node<E> next;
-        E value;
-
-        Node(E value) {
+        Node(T value) {
             this(null, value);
         }
 
-        Node(Node<E> next, E value) {
+        Node(Node<T> next, T value) {
             this.next = next;
             this.value = value;
         }
     }
+
+    private Node<E> head;
+    private Node<E> tail;
+    private int     size;
+    private long    modificationCount;
 
     public SinglyLinkedList() {
         this.size = 0;
@@ -36,24 +34,29 @@ public class SinglyLinkedList<E> implements List<E> {
         addAll(c);
     }
 
-    // Time Complexity = O(1)
+    /*
+     * Time Complexity = O(1)
+     */
     @Override
-    public boolean add(E e) {
-        add(size, e);
+    public boolean add(E element) {
+        add(size, element);
         return true;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public void add(int index, E element) {
+        if ((index < 0) || (index > size)) {
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
 
-        if (index < 0 || index > size)
-            throw new IndexOutOfBoundsException("Index out of bounds : "+index);
-
-        Node<E> node = new Node<>(element);
+        var node = new Node<>(element);
 
         if (isEmpty()) {
-            head = tail = node;
+            head = node;
+            tail = node;
         } else if (index == 0) {
             linkNodes(node, head);
             head = node;
@@ -71,38 +74,47 @@ public class SinglyLinkedList<E> implements List<E> {
         modificationCount++;
     }
 
-    private void linkNodes(Node<E> left, Node<E> right) {
-        if (left != null)
-            left.next = right;
+    private void linkNodes(Node<E> leftNode, Node<E> rightNode) {
+        if (leftNode != null) {
+            leftNode.next = rightNode;
+        }
     }
 
-    // Time Complexity = O(m) , m = size of c
+    /*
+     * Time Complexity = O(m)
+     * m = size of c
+     */
     @Override
     public boolean addAll(Collection<? extends E> c) {
         return addAll(size, c);
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
-
-        if (index < 0 || index > size)
+        if ((index < 0) || (index > size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
 
-        if (c.isEmpty())
+        Objects.requireNonNull(c);
+
+        if (c.isEmpty()) {
             return false;
+        }
 
         Node<E> cHead = null;
         Node<E> cTail = null;
 
+        // Link all elements of Collection c.
         for (E e : c) {
             var currentNode = new Node<>(e);
-
-            if (cHead == null)
+            if (cHead == null) {
                 cHead = currentNode;
-            else
+            } else {
                 linkNodes(cTail, currentNode);
-
+            }
             cTail = currentNode;
         }
 
@@ -118,66 +130,83 @@ public class SinglyLinkedList<E> implements List<E> {
         } else {
             var indexNode = getNode(index);
             var previousIndexNode = getPreviousNode(indexNode);
+
             linkNodes(previousIndexNode, cHead);
             linkNodes(cTail, indexNode);
         }
 
         size += c.size();
         modificationCount++;
+
         return true;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     private Node<E> getNode(int index) {
-        if (index < 0 || index >= size)
+        if ((index < 0) || (index >= size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
 
-        if (index == 0)
+        if (index == 0) {
             return head;
-        else if (index == size - 1)
+        } else if (index == size - 1) {
             return tail;
+        }
 
         var traverse = head;
-        for (int i = 0; i < index; i++)
-            traverse = traverse.next;
-        return traverse;
-    }
 
-    private Node<E> getPreviousNode(Node<? extends E> node) {
-        if (node == head)
-            return null;
-        var traverse = head;
-        while (traverse.next != node)
-            traverse = traverse.next;
-        return traverse;
-    }
-
-    // Time Complexity = O(n)
-    @Override
-    public E remove(int index) {
-        if (index < 0 || index >= size)
-            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
-
-        Node<E> previous = null;
-        Node<E> traverse = head;
-
-        for (int i = 0; i < index; i++) {
-            previous = traverse;
+        for (var i = 0; i < index; i++) {
             traverse = traverse.next;
         }
 
-        return remove(traverse, previous);
+        return traverse;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity : O(n)
+     */
+    private Node<E> getPreviousNode(Node<? extends E> targetNode) {
+        if (targetNode == head) {
+            return null;
+        }
+
+        var traverse = head;
+        while (traverse.next != targetNode) {
+            traverse = traverse.next;
+        }
+        return traverse;
+    }
+
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
-    public boolean remove(Object o) {
+    public E remove(int index) {
+        if ((index < 0) || (index >= size)) {
+            throw new IndexOutOfBoundsException("Index out of bounds : " + index);
+        }
+
         Node<E> previous = null;
         Node<E> traverse = head;
+        for (var i = 0; i < index; i++) {
+            previous = traverse;
+            traverse = traverse.next;
+        }
+        return removeNode(traverse, previous);
+    }
 
+    /*
+     * Time Complexity = O(n)
+     */
+    @Override
+    public boolean remove(Object object) {
+        Node<E> previous = null;
+        Node<E> traverse = head;
         while (traverse != null) {
-            if (Objects.equals(traverse.value, o)) {
-                remove(traverse, previous);
+            if (Objects.equals(object, traverse.value)) {
+                removeNode(traverse, previous);
                 return true;
             }
             previous = traverse;
@@ -186,95 +215,131 @@ public class SinglyLinkedList<E> implements List<E> {
         return false;
     }
 
-    // Time Complexity = O(n) * O(m) , O(m) = Time Complexity Of predicate
-    private boolean removeAllIf(Predicate<E> predicate) {
+    /*
+     * Time Complexity = O(n) * O(m)
+     * O(m) = Time Complexity Of predicate
+     */
+    private boolean removeAllIf(Predicate<? super E> predicate) {
         var sizeBefore = size;
         Node<E> previous = null;
         Node<E> traverse = head;
 
         while (traverse != null) {
             var next = traverse.next;
-            if (predicate.test(traverse.value))
-                remove(traverse, previous);
-            else
+            if (predicate.test(traverse.value)) {
+                removeNode(traverse, previous);
+            } else {
                 previous = traverse;
+            }
             traverse = next;
         }
 
         return sizeBefore != size;
     }
 
-    // Time Complexity = O(nm) , m = size of c
+    /*
+     * Time Complexity = O(nm) , m = size of c
+     */
     @Override
     public boolean removeAll(Collection<?> c) {
-
-        if (c.isEmpty() || isEmpty())
+        Objects.requireNonNull(c);
+        if (c.isEmpty() || isEmpty()) {
             return false;
-
+        }
         return removeAllIf(c::contains);
     }
 
-    // Time Complexity = O(1)
-    private E remove(Node<E> target, Node<E> previous) {
+    /*
+     * Time Complexity = O(1)
+     */
+    private E removeNode(Node<E> target, Node<E> previous) {
         linkNodes(previous, target.next);
 
-        if (target == head)
-            head = target.next;
-        if (target == tail)
+        if (target == head) {
+            head = head.next;
+        }
+
+        if (target == tail) {
             tail = previous;
+        }
 
         var value = target.value;
+
         target.value = null;
-        target.next = target = null;
+        target.next = null;
+        target = null;
+
         size--;
         modificationCount++;
+
         return value;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
-    public boolean contains(Object o) {
-        return indexOf(o) != -1;
+    public boolean contains(Object object) {
+        return indexOf(object) != -1;
     }
 
-    // Time Complexity = O(nm) , m = size of c
+    /*
+     * Time Complexity = O(nm)
+     * m = size of c
+     */
     @Override
     public boolean containsAll(Collection<?> c) {
-        for (Object o : c)
-            if (!contains(o))
+        Objects.requireNonNull(c);
+
+        if (isEmpty()) {
+            return c.isEmpty();
+        }
+
+        for (var o : c) {
+            if (!contains(o)) {
                 return false;
+            }
+        }
+
         return true;
     }
 
-    // Time Complexity = O(nm) , m = size of c
+    /*
+     * Time Complexity = O(nm) , m = size of c
+     */
     @Override
     public boolean retainAll(Collection<?> c) {
+        Objects.requireNonNull(c);
 
-        if (c == this)
+        if (this == c) {
             return false;
+        }
 
         var sizeBefore = size;
-
-        if (c.isEmpty())
+        if (c.isEmpty()) {
             clear();
-        else
+        } else {
             removeAllIf(t -> !c.contains(t));
-
+        }
         return sizeBefore != size;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public E get(int index) {
         return getNode(index).value;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public E set(int index, E element) {
-        var node = getNode(index);
-        E value = node.value;
-        node.value = element;
+        var indexNode = getNode(index);
+        var value = indexNode.value;
+        indexNode.value = element;
         return value;
     }
 
@@ -288,100 +353,137 @@ public class SinglyLinkedList<E> implements List<E> {
         return size == 0;
     }
 
-    // Time Complexity = O(1)
+    /*
+     * Time Complexity = O(1)
+     */
     @Override
     public void clear() {
         modificationCount++;
-        if (isEmpty())
+
+        if (isEmpty()) {
             return;
+        }
+
         head.next = null;
-        head.value = tail.value = null;
-        head = tail = null;
+        head.value = null;
+        head = null;
+        tail.value = null;
+        tail = null;
         size = 0;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
-    public int indexOf(Object o) {
+    public int indexOf(Object object) {
         var traverse = head;
-        for (int i = 0; i < size; i++, traverse = traverse.next)
-            if (Objects.equals(o, traverse.value))
+        for (var i = 0; i < size; i++) {
+            if (Objects.equals(object, traverse.value)) {
                 return i;
+            }
+            traverse = traverse.next;
+        }
         return -1;
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(Object object) {
         var lastIndex = -1;
         var traverse = head;
-
-        for (int i = 0; i < size; i++, traverse = traverse.next)
-            if (Objects.equals(o, traverse.value))
+        for (var i = 0; i < size; i++, traverse = traverse.next) {
+            if (Objects.equals(object, traverse.value)) {
                 lastIndex = i;
+            }
+        }
         return lastIndex;
     }
 
     @Override
     public Iterator<E> iterator() {
         return new Iterator<>() {
+            private final long EXPECTED_MODIFICATION_COUNT = modificationCount;
+            private Node<E> traverse = null;
+            private Node<E> previous = null;
+            private boolean currentElementExists = false;
 
-            final long expectedModificationCount = modificationCount;
-            Node<E> traverse = null;
-            Node<E> previous = null;
-            boolean currentElementExists = false;
-
-            // Time Complexity = O(1)
+            /*
+             * Time Complexity = O(1)
+             */
             @Override
             public boolean hasNext() {
-                if (traverse == null)
-                    return previous == null ? head != null : previous.next != null;
+                if (EXPECTED_MODIFICATION_COUNT != modificationCount) {
+                    return false;
+                }
+
+                if (traverse == null) {
+                    return previous == null
+                            ? head != null
+                            : previous.next != null;
+                }
+
                 return traverse.next != null;
             }
 
-            // Time Complexity = O(1)
+            /*
+             * Time Complexity = O(1)
+             */
             @Override
             public E next() {
                 checkModificationCount();
-                if (!hasNext())
-                    throw new NoSuchElementException("No such element.");
+
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
 
                 previous = traverse == null ? previous : traverse;
                 traverse = previous == null ? head : previous.next;
+
                 var value = traverse.value;
                 currentElementExists = true;
+
                 return value;
             }
 
-            // Time Complexity = O(1)
+            /*
+             * Time Complexity = O(1)
+             */
             @Override
             public void remove() {
-
-                if (!currentElementExists)
+                if (!currentElementExists) {
                     throw new IllegalStateException();
+                }
 
                 checkModificationCount();
 
-                SinglyLinkedList.this.remove(traverse, previous);
+                SinglyLinkedList.this.removeNode(traverse, previous);
                 traverse = null;
                 modificationCount--;
                 currentElementExists = false;
             }
 
             private void checkModificationCount() {
-                if (expectedModificationCount != modificationCount)
+                if (EXPECTED_MODIFICATION_COUNT != modificationCount) {
                     throw new ConcurrentModificationException();
+                }
             }
         };
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public Object[] toArray() {
-        var array = (E[]) new Object[size];
+        var array = new Object[size];
         var traverse = head;
-        for (int i = 0; i < size; traverse = traverse.next)
-            array[i++] = traverse.value;
+        for (var i = 0; i < size; i++) {
+            array[i] = traverse.value;
+            traverse = traverse.next;
+        }
         return array;
     }
 
@@ -400,68 +502,89 @@ public class SinglyLinkedList<E> implements List<E> {
         throw new UnsupportedOperationException();
     }
 
-    // Time Complexity = O(n)
+    /*
+     * Time Complexity = O(n)
+     */
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-
-        if (fromIndex < 0)
+        if (fromIndex < 0) {
             throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+        }
 
-        if (toIndex > size)
+        if (toIndex > size) {
             throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+        }
 
-        if (fromIndex > toIndex)
+        if (fromIndex > toIndex) {
             throw new IllegalArgumentException("fromIndex(%d) > toIndex(%d)".formatted(fromIndex, toIndex));
+        }
 
-        List<E> list = new SinglyLinkedList<>();
+        var subList = new CircularSinglyLinkedList<E>();
 
-        if (fromIndex == toIndex)
-            return list;
+        if (fromIndex == toIndex) {
+            return subList;
+        }
 
         var traverse = getNode(fromIndex);
-
-        for (int i = fromIndex; i < toIndex; i++, traverse = traverse.next)
-            list.add(traverse.value);
-
-        return list;
+        for (var i = fromIndex; i < toIndex; i++) {
+            subList.add(traverse.value);
+            traverse = traverse.next;
+        }
+        return subList;
     }
 
     @Override
     public String toString() {
-        var sb = new StringBuilder();
-        sb.append("[");
-        var traverse = head;
-        while (traverse != null) {
-            if (traverse != head)
-                sb.append(", ");
-            sb.append(traverse.value);
-            traverse = traverse.next;
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.append("[");
+
+        var appendComma = false;
+
+        for (var e : this) {
+            if (appendComma) {
+                stringBuilder.append(", ");
+            }
+            stringBuilder.append(e);
+            appendComma = true;
         }
-        sb.append("]");
-        return sb.toString();
+
+        stringBuilder.append("]");
+
+        return stringBuilder.toString();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == this)
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
+        }
 
-        if (!(o instanceof List<?> that) || this.size() != that.size())
+        if (!(other instanceof List<?> otherList) || (this.size() != otherList.size())) {
             return false;
+        }
 
         var thisIterator = this.iterator();
-        var thatIterator = that.iterator();
-        while (thisIterator.hasNext())
-            if (!Objects.equals(thisIterator.next(), thatIterator.next()))
+        var otherIterator = otherList.iterator();
+
+        while (thisIterator.hasNext()) {
+            if (!Objects.equals(
+                    thisIterator.next(),
+                    otherIterator.next())
+            ) {
                 return false;
+            }
+        }
+
         return true;
     }
 
     @Override
     public int hashCode() {
         var hashCode = 0;
-        for (E e : this)
+        for (var e : this) {
             hashCode = 31 * hashCode + (e == null ? 0 : e.hashCode());
+        }
         return hashCode;
     }
 }
