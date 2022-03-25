@@ -126,8 +126,19 @@ public class ArrayList<E> implements List<E> {
      * @return the destination array.
      */
     private E[] copySkip(E[] src, E[] des, int desSkipFrom, int desSkipLength, int length) {
+        if (desSkipFrom < 0 || desSkipFrom >= des.length) {
+            throw new IndexOutOfBoundsException("Index out of bounds : " + desSkipFrom);
+        }
+
+        if (desSkipLength < 0) {
+            throw new IllegalArgumentException("Illegal skip length : " + desSkipLength);
+        }
+
+        var desSkipTo = desSkipFrom + desSkipLength;
+
         System.arraycopy(src, 0, des, 0, desSkipFrom);
-        System.arraycopy(src, desSkipFrom, des, desSkipFrom + desSkipLength, length - desSkipFrom);
+        System.arraycopy(src, desSkipFrom, des, desSkipTo, length - desSkipFrom);
+
         return des;
     }
 
