@@ -103,7 +103,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         Node<E> cHead = null;
         Node<E> cTail = null;
 
-        // Link all elements of Collection c.
+        // Links all elements of Collection c.
         for (E e : c) {
             var currentNode = new Node<>(e);
             if (cHead == null) {
@@ -144,7 +144,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     private Node<E> getPreviousNode(Node<E> targetNode) {
         if (targetNode == head) {
@@ -161,7 +161,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     private Node<E> getNode(int index) {
         if ((index < 0) || (index >= size)) {

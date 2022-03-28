@@ -83,7 +83,8 @@ public class DoublyLinkedList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity = O(n + m) , m = size of c
+     * Time Complexity = O(n + m)
+     * m = size of c
      */
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
@@ -100,7 +101,7 @@ public class DoublyLinkedList<E> implements List<E> {
         Node<E> cHead = null;
         Node<E> cTail = null;
 
-        // Link all elements of Collection c.
+        // Links all elements of Collection c.
         for (E e : c) {
             var currentNode = new Node<>(e);
             if (cHead == null) {
@@ -217,7 +218,7 @@ public class DoublyLinkedList<E> implements List<E> {
      * Time Complexity = O(n) * O(m)
      * O(m) = Time Complexity of predicate
      */
-    private boolean removeAllIf(Predicate<E> predicate) {
+    private boolean removeAllIf(Predicate<? super E> predicate) {
         if (isEmpty()) {
             return false;
         }
@@ -285,7 +286,8 @@ public class DoublyLinkedList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity = O(nm) , m = size of c
+     * Time Complexity = O(nm)
+     * m = size of c
      */
     @Override
     public boolean retainAll(Collection<?> c) {
@@ -386,7 +388,7 @@ public class DoublyLinkedList<E> implements List<E> {
             private boolean currentElementExists = false;
 
             /*
-             * Time Complexity : O(1)
+             * Time Complexity = O(1)
              */
             @Override
             public boolean hasNext() {
@@ -399,7 +401,7 @@ public class DoublyLinkedList<E> implements List<E> {
             }
 
             /*
-             * Time Complexity : O(1)
+             * Time Complexity = O(1)
              */
             @Override
             public E next() {
@@ -416,7 +418,7 @@ public class DoublyLinkedList<E> implements List<E> {
             }
 
             /*
-             * Time Complexity : O(1)
+             * Time Complexity = O(1)
              */
             @Override
             public void remove() {

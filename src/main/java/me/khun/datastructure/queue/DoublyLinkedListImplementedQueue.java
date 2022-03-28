@@ -87,7 +87,8 @@ public class DoublyLinkedListImplementedQueue<E> implements Queue<E> {
     }
 
     /*
-     * Time Complexity = O(nm) , m = size of c
+     * Time Complexity = O(nm)
+     * m = size of c
      */
     @Override
     public boolean removeAll(Collection<?> c) {

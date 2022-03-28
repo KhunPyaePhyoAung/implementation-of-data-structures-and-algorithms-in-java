@@ -107,7 +107,7 @@ public class SinglyLinkedList<E> implements List<E> {
         Node<E> cHead = null;
         Node<E> cTail = null;
 
-        // Link all elements of Collection c.
+        // Links all elements of Collection c.
         for (E e : c) {
             var currentNode = new Node<>(e);
             if (cHead == null) {
@@ -165,7 +165,7 @@ public class SinglyLinkedList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     private Node<E> getPreviousNode(Node<? extends E> targetNode) {
         if (targetNode == head) {
@@ -238,7 +238,8 @@ public class SinglyLinkedList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity = O(nm) , m = size of c
+     * Time Complexity = O(nm)
+     * m = size of c
      */
     @Override
     public boolean removeAll(Collection<?> c) {
@@ -305,7 +306,8 @@ public class SinglyLinkedList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity = O(nm) , m = size of c
+     * Time Complexity = O(nm)
+     * m = size of c
      */
     @Override
     public boolean retainAll(Collection<?> c) {

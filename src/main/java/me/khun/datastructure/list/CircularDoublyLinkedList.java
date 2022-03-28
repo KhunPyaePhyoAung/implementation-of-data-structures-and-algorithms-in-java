@@ -80,7 +80,8 @@ public class CircularDoublyLinkedList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity = O(n + m) , m = size of c
+     * Time Complexity = O(n + m)
+     * m = size of c
      */
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
@@ -97,7 +98,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         Node<E> cHead = null;
         Node<E> cTail = null;
 
-        // Link all elements of Collection c.
+        // Links all elements of Collection c.
         for (E e : c) {
             var node = new Node<>(e);
             if (cHead == null) {
@@ -273,7 +274,8 @@ public class CircularDoublyLinkedList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity = O(nm) , m = size of c
+     * Time Complexity = O(nm)
+     * m = size of c
      */
     @Override
     public boolean retainAll(Collection<?> c) {
@@ -406,7 +408,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
             private boolean currentElementExists = false;
 
             /*
-             * Time Complexity : O(1)
+             * Time Complexity = O(1)
              */
             @Override
             public boolean hasNext() {
@@ -419,7 +421,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
             }
 
             /*
-             * Time Complexity : O(1)
+             * Time Complexity = O(1)
              */
             @Override
             public E next() {
@@ -437,7 +439,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
             }
 
             /*
-             * Time Complexity : O(1)
+             * Time Complexity = O(1)
              */
             @Override
             public void remove() {

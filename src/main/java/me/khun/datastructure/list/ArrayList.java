@@ -34,7 +34,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     @Override
     public boolean add(E element) {
@@ -43,7 +43,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     @Override
     public void add(int index, E element) {
@@ -68,7 +68,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n + m)
+     * Time Complexity = O(n + m)
      * m = size of c
      */
     @Override
@@ -77,7 +77,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n + m)
+     * Time Complexity = O(n + m)
      * m = size of c
      */
     @Override
@@ -155,7 +155,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(1)
+     * Time Complexity = O(1)
      */
     @Override
     public int size() {
@@ -163,7 +163,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(1)
+     * Time Complexity = O(1)
      */
     @Override
     public boolean isEmpty() {
@@ -171,7 +171,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     @Override
     public boolean contains(Object object) {
@@ -179,7 +179,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(nm)
+     * Time Complexity = O(nm)
      * m = size of c
      */
     @Override
@@ -194,7 +194,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     @Override
     public E remove(int index) {
@@ -214,7 +214,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     @Override
     public boolean remove(Object object) {
@@ -227,7 +227,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(nm)
+     * Time Complexity = O(nm)
      * m = size of c
      */
     @Override
@@ -281,7 +281,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(nm)
+     * Time Complexity = O(nm)
      * m = size of c
      */
     @Override
@@ -303,7 +303,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(1)
+     * Time Complexity = O(1)
      */
     @Override
     public E get(int index) {
@@ -314,7 +314,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(1)
+     * Time Complexity = O(1)
      */
     @Override
     public E set(int index, E element) {
@@ -324,7 +324,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     @Override
     public int indexOf(Object object) {
@@ -337,7 +337,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     @Override
     public int lastIndexOf(Object object) {
@@ -350,7 +350,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     @Override
     public void clear() {
@@ -362,7 +362,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(1)
+     * Time Complexity = O(1)
      */
     @Override
     public Iterator<E> iterator() {
@@ -372,7 +372,7 @@ public class ArrayList<E> implements List<E> {
             private boolean currentElementExists = false;
 
             /*
-             * Time Complexity : O(1)
+             * Time Complexity = O(1)
              */
             @Override
             public boolean hasNext() {
@@ -383,7 +383,7 @@ public class ArrayList<E> implements List<E> {
             }
 
             /*
-             * Time Complexity : O(1)
+             * Time Complexity = O(1)
              */
             @Override
             public E next() {
@@ -399,7 +399,7 @@ public class ArrayList<E> implements List<E> {
             }
 
             /*
-             * Time Complexity : O(n)
+             * Time Complexity = O(n)
              */
             @Override
             public void remove() {
@@ -426,7 +426,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     @Override
     public Object[] toArray() {
@@ -449,7 +449,7 @@ public class ArrayList<E> implements List<E> {
     }
 
     /*
-     * Time Complexity : O(n)
+     * Time Complexity = O(n)
      */
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
