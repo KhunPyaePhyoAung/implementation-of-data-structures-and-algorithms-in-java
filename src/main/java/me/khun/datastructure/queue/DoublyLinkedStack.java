@@ -6,11 +6,11 @@ import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Objects;
 
-public class Stack<E> {
+public class DoublyLinkedStack<E> {
 
     private final List<E> CONTAINER;
 
-    public Stack() {
+    public DoublyLinkedStack() {
         CONTAINER = new DoublyLinkedList<>();
     }
 
@@ -85,7 +85,7 @@ public class Stack<E> {
             return true;
         }
 
-        if (!(other instanceof Stack<?> otherStack) || (this.size() != otherStack.size())) {
+        if (!(other instanceof DoublyLinkedStack<?> otherStack) || (this.size() != otherStack.size())) {
             return false;
         }
 

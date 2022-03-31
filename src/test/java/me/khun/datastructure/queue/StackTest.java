@@ -8,14 +8,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StackTest {
 
-    private Stack<Integer> stack0;
-    private Stack<Integer> stack1;
+    private DoublyLinkedStack<Integer> stack0;
+    private DoublyLinkedStack<Integer> stack1;
 
     @BeforeEach
     public void setupStack() {
-        stack0 = new Stack<>();
+        stack0 = new DoublyLinkedStack<>();
 
-        stack1 = new Stack<>();
+        stack1 = new DoublyLinkedStack<>();
         stack1.push(0);
         stack1.push(1);
         stack1.push(2);
@@ -148,10 +148,10 @@ public class StackTest {
 
     @Test
     public void testEqualsMethodForEquals() {
-        assertEquals(new Stack<String>(), stack0);
-        assertEquals(new Stack<Short>(), stack0);
-        assertEquals(new Stack<Long>(), stack0);
-        assertEquals(new Stack<Double>(), stack0);
+        assertEquals(new DoublyLinkedStack<String>(), stack0);
+        assertEquals(new DoublyLinkedStack<Short>(), stack0);
+        assertEquals(new DoublyLinkedStack<Long>(), stack0);
+        assertEquals(new DoublyLinkedStack<Double>(), stack0);
         assertEquals(stack0, stack0);
 
         stack0.push(0);
@@ -173,7 +173,7 @@ public class StackTest {
         assertNotEquals(null, stack1);
         assertNotEquals(stack0, stack1);
 
-        var s1 = new Stack<Short>();
+        var s1 = new DoublyLinkedStack<Short>();
         s1.push((short) 0);
         s1.push((short) 1);
         s1.push((short) 2);
@@ -189,13 +189,13 @@ public class StackTest {
 
     @Test
     public void testHashCodeMethodForEquals() {
-        assertEquals(new Stack<Integer>().hashCode(), stack0.hashCode());
-        assertEquals(new Stack<String>().hashCode(), stack0.hashCode());
-        assertEquals(new Stack<Short>().hashCode(), stack0.hashCode());
-        assertEquals(new Stack<Long>().hashCode(), stack0.hashCode());
-        assertEquals(new Stack<Double>().hashCode(), stack0.hashCode());
+        assertEquals(new DoublyLinkedStack<Integer>().hashCode(), stack0.hashCode());
+        assertEquals(new DoublyLinkedStack<String>().hashCode(), stack0.hashCode());
+        assertEquals(new DoublyLinkedStack<Short>().hashCode(), stack0.hashCode());
+        assertEquals(new DoublyLinkedStack<Long>().hashCode(), stack0.hashCode());
+        assertEquals(new DoublyLinkedStack<Double>().hashCode(), stack0.hashCode());
 
-        var s1 = new Stack<Short>();
+        var s1 = new DoublyLinkedStack<Short>();
         s1.push((short) 0);
         s1.push((short) 1);
         s1.push((short) 2);
@@ -208,7 +208,7 @@ public class StackTest {
 
         assertEquals(s1.hashCode(), stack1.hashCode());
 
-        var s2 = new Stack<Long>();
+        var s2 = new DoublyLinkedStack<Long>();
         s2.push(0L);
         s2.push(1L);
         s2.push(2L);
@@ -235,14 +235,14 @@ public class StackTest {
 
         assertNotEquals(stack0.hashCode(), stack1.hashCode());
 
-        var s1 = new Stack<Integer>();
+        var s1 = new DoublyLinkedStack<Integer>();
         s1.push(-1);
         s1.push(-2);
         s1.push(-3);
         s1.push(-4);
         s1.push(-5);
 
-        var s2 = new Stack<Long>();
+        var s2 = new DoublyLinkedStack<Long>();
         s2.push(-1L);
         s2.push(-2L);
         s2.push(-3L);
