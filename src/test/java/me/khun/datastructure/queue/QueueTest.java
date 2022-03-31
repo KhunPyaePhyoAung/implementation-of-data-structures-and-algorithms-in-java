@@ -25,7 +25,7 @@ public class QueueTest {
 
     private static List<Class<? extends Queue>> getQueueClasses() {
         return List.of(
-                DoublyLinkedListImplementedQueue.class
+                DoublyLinkedQueue.class
         );
     }
 
@@ -167,8 +167,8 @@ public class QueueTest {
     }
 
     private <Q extends Queue, T> Queue<T> createQueue(Class<Q> c, Class<? extends T> type) {
-        if (c == DoublyLinkedListImplementedQueue.class) {
-            return new DoublyLinkedListImplementedQueue<>();
+        if (c == DoublyLinkedQueue.class) {
+            return new DoublyLinkedQueue<>();
         }
 
         throw new IllegalArgumentException();

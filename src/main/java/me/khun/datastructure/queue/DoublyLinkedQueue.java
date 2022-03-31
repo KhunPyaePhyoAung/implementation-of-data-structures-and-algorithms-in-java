@@ -4,13 +4,13 @@ import me.khun.datastructure.list.DoublyLinkedList;
 
 import java.util.*;
 
-public class DoublyLinkedListImplementedQueue<E> implements Queue<E> {
+public class DoublyLinkedQueue<E> implements Queue<E> {
 
     private final List<E> CONTAINER = new DoublyLinkedList<>();
 
-    public DoublyLinkedListImplementedQueue() {}
+    public DoublyLinkedQueue() {}
 
-    public DoublyLinkedListImplementedQueue(Collection<? extends E> c) {
+    public DoublyLinkedQueue(Collection<? extends E> c) {
         Objects.requireNonNull(c);
         addAll(c);
     }
