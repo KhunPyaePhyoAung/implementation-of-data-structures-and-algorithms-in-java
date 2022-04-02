@@ -6,13 +6,15 @@ import java.util.*;
 
 public class DoublyLinkedQueue<E> implements Queue<E> {
 
-    private final List<E> CONTAINER = new DoublyLinkedList<>();
+    protected final DoublyLinkedList<E> CONTAINER;
 
-    public DoublyLinkedQueue() {}
+    public DoublyLinkedQueue() {
+        CONTAINER = new DoublyLinkedList<>();
+    }
 
     public DoublyLinkedQueue(Collection<? extends E> c) {
         Objects.requireNonNull(c);
-        addAll(c);
+        CONTAINER = new DoublyLinkedList<>(c);
     }
 
     /*
