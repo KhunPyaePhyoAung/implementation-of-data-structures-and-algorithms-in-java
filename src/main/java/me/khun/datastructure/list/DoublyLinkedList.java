@@ -181,14 +181,20 @@ public class DoublyLinkedList<E> implements List<E> {
      */
     @Override
     public boolean remove(Object object) {
-        var traverse = head;
+        return remove(object, true);
+    }
+
+    /*
+     * Time Complexity = O(n)
+     */
+    public boolean remove(Object object, boolean fromFirst) {
+        var traverse = fromFirst ? head : tail;
         while (traverse != null) {
-            var next = traverse.next;
             if (Objects.equals(object, traverse.value)) {
                 removeNode(traverse);
                 return true;
             }
-            traverse = next;
+            traverse = fromFirst ? traverse.next : traverse.previous;
         }
         return false;
     }
