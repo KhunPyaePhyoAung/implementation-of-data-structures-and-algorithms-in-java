@@ -1,9 +1,12 @@
 package me.khun.datastructure.list;
 
+import me.khun.datastructure.adt.ICollection;
+import me.khun.datastructure.adt.IList;
+
 import java.util.*;
 import java.util.function.Predicate;
 
-public class SinglyLinkedList<E> implements List<E> {
+public class SinglyLinkedList<E> implements IList<E> {
 
     private static class Node<T> {
         Node<T> next;
@@ -29,7 +32,7 @@ public class SinglyLinkedList<E> implements List<E> {
         this.modificationCount = 0;
     }
 
-    public SinglyLinkedList(Collection<? extends  E> c) {
+    public SinglyLinkedList(ICollection<? extends  E> c) {
         this();
         addAll(c);
     }
@@ -85,7 +88,7 @@ public class SinglyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean addAll(ICollection<? extends E> c) {
         return addAll(size, c);
     }
 
@@ -93,7 +96,7 @@ public class SinglyLinkedList<E> implements List<E> {
      * Time Complexity = O(n)
      */
     @Override
-    public boolean addAll(int index, Collection<? extends E> c) {
+    public boolean addAll(int index, ICollection<? extends E> c) {
         if ((index < 0) || (index > size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
         }
@@ -242,7 +245,7 @@ public class SinglyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(ICollection<?> c) {
         Objects.requireNonNull(c);
         if (c.isEmpty() || isEmpty()) {
             return false;
@@ -289,7 +292,7 @@ public class SinglyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(ICollection<?> c) {
         Objects.requireNonNull(c);
 
         if (isEmpty()) {
@@ -310,7 +313,7 @@ public class SinglyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(ICollection<?> c) {
         Objects.requireNonNull(c);
 
         if (this == c) {
@@ -489,26 +492,11 @@ public class SinglyLinkedList<E> implements List<E> {
         return array;
     }
 
-    @Override
-    public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ListIterator<E> listIterator() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ListIterator<E> listIterator(int index) {
-        throw new UnsupportedOperationException();
-    }
-
     /*
      * Time Complexity = O(n)
      */
     @Override
-    public List<E> subList(int fromIndex, int toIndex) {
+    public IList<E> subList(int fromIndex, int toIndex) {
         if (fromIndex < 0) {
             throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
         }
@@ -521,7 +509,7 @@ public class SinglyLinkedList<E> implements List<E> {
             throw new IllegalArgumentException("fromIndex(%d) > toIndex(%d)".formatted(fromIndex, toIndex));
         }
 
-        var subList = new CircularSinglyLinkedList<E>();
+        var subList = new SinglyLinkedList<E>();
 
         if (fromIndex == toIndex) {
             return subList;
@@ -562,7 +550,7 @@ public class SinglyLinkedList<E> implements List<E> {
             return true;
         }
 
-        if (!(other instanceof List<?> otherList) || (this.size() != otherList.size())) {
+        if (!(other instanceof IList<?> otherList) || (this.size() != otherList.size())) {
             return false;
         }
 

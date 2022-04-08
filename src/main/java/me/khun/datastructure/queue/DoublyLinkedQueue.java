@@ -1,10 +1,12 @@
 package me.khun.datastructure.queue;
 
+import me.khun.datastructure.adt.ICollection;
+import me.khun.datastructure.adt.IQueue;
 import me.khun.datastructure.list.DoublyLinkedList;
 
 import java.util.*;
 
-public class DoublyLinkedQueue<E> implements Queue<E> {
+public class DoublyLinkedQueue<E> implements IQueue<E> {
 
     protected final DoublyLinkedList<E> CONTAINER;
 
@@ -12,9 +14,17 @@ public class DoublyLinkedQueue<E> implements Queue<E> {
         CONTAINER = new DoublyLinkedList<>();
     }
 
-    public DoublyLinkedQueue(Collection<? extends E> c) {
+    public DoublyLinkedQueue(ICollection<? extends E> c) {
         Objects.requireNonNull(c);
         CONTAINER = new DoublyLinkedList<>(c);
+    }
+
+    public DoublyLinkedQueue(IQueue<? extends E> q) {
+        Objects.requireNonNull(q);
+        CONTAINER = new DoublyLinkedList<>();
+        for (E e : q) {
+            CONTAINER.add(e);
+        }
     }
 
     /*
@@ -31,15 +41,6 @@ public class DoublyLinkedQueue<E> implements Queue<E> {
     @Override
     public boolean add(E element) {
         return CONTAINER.add(element);
-    }
-
-    /*
-     * Time Complexity = O(m)
-     * m = size of c
-     */
-    @Override
-    public boolean addAll(Collection<? extends E> c) {
-        return CONTAINER.addAll(c);
     }
 
     /*
@@ -89,38 +90,11 @@ public class DoublyLinkedQueue<E> implements Queue<E> {
     }
 
     /*
-     * Time Complexity = O(nm)
-     * m = size of c
-     */
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        return CONTAINER.removeAll(c);
-    }
-
-    /*
      * Time Complexity = O(n)
      */
     @Override
     public boolean contains(Object object) {
         return CONTAINER.contains(object);
-    }
-
-    /*
-     * Time Complexity = O(nm)
-     * m = size of c
-     */
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return CONTAINER.containsAll(c);
-    }
-
-    /*
-     * Time Complexity = O(nm)
-     * m = size of c
-     */
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        return CONTAINER.retainAll(c);
     }
 
     @Override
@@ -139,18 +113,13 @@ public class DoublyLinkedQueue<E> implements Queue<E> {
     }
 
     @Override
-    public Object[] toArray() {
-        return CONTAINER.toArray();
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        return CONTAINER.toArray(a);
-    }
-
-    @Override
     public void clear() {
         CONTAINER.clear();
+    }
+
+    @Override
+    public Object[] toArray() {
+        return CONTAINER.toArray();
     }
 
     @Override
@@ -164,7 +133,7 @@ public class DoublyLinkedQueue<E> implements Queue<E> {
             return true;
         }
 
-        if (!(other instanceof Queue<?> otherQueue) || (this.size() != otherQueue.size())) {
+        if (!(other instanceof IQueue<?> otherQueue) || (this.size() != otherQueue.size())) {
             return false;
         }
 

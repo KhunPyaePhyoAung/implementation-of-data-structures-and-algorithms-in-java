@@ -1,9 +1,12 @@
 package me.khun.datastructure.list;
 
+import me.khun.datastructure.adt.ICollection;
+import me.khun.datastructure.adt.IList;
+
 import java.util.*;
 import java.util.function.Predicate;
 
-public class CircularDoublyLinkedList<E> implements List<E> {
+public class CircularDoublyLinkedList<E> implements IList<E> {
 
     private static class Node<T> {
         Node<T> previous;
@@ -25,7 +28,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         this.modificationCount = 0;
     }
 
-    public CircularDoublyLinkedList(Collection<? extends E> c) {
+    public CircularDoublyLinkedList(ICollection<? extends E> c) {
         this();
         addAll(size, c);
     }
@@ -75,7 +78,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean addAll(ICollection<? extends E> c) {
         return addAll(size, c);
     }
 
@@ -84,7 +87,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean addAll(int index, Collection<? extends E> c) {
+    public boolean addAll(int index, ICollection<? extends E> c) {
         if ((index < 0) || (index > size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
         }
@@ -207,7 +210,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
      *  = size of c
      */
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(ICollection<?> c) {
         Objects.requireNonNull(c);
 
         if (c.isEmpty() || isEmpty()) {
@@ -278,7 +281,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(ICollection<?> c) {
         Objects.requireNonNull(c);
 
         if (this == c) {
@@ -338,7 +341,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(ICollection<?> c) {
         Objects.requireNonNull(c);
         for (var o : c) {
             if (!contains(o)) {
@@ -480,26 +483,11 @@ public class CircularDoublyLinkedList<E> implements List<E> {
         return array;
     }
 
-    @Override
-    public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ListIterator<E> listIterator() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ListIterator<E> listIterator(int index) {
-        throw new UnsupportedOperationException();
-    }
-
     /*
      * Time Complexity = O(n)
      */
     @Override
-    public List<E> subList(int fromIndex, int toIndex) {
+    public IList<E> subList(int fromIndex, int toIndex) {
         if (fromIndex < 0) {
             throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
         }
@@ -553,7 +541,7 @@ public class CircularDoublyLinkedList<E> implements List<E> {
             return true;
         }
 
-        if (!(other instanceof List<?> that) || (this.size() != that.size())) {
+        if (!(other instanceof IList<?> that) || (this.size() != that.size())) {
             return false;
         }
 

@@ -1,10 +1,13 @@
 package me.khun.datastructure.list;
 
+import me.khun.datastructure.adt.ICollection;
+import me.khun.datastructure.adt.IList;
+
 import java.util.*;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
-public class ArrayList<E> implements List<E> {
+public class ArrayList<E> implements IList<E> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
@@ -28,7 +31,7 @@ public class ArrayList<E> implements List<E> {
         this.modificationCount = 0;
     }
 
-    public ArrayList(Collection<? extends E> c) {
+    public ArrayList(ICollection<? extends E> c) {
         this(c.size());
         addAll(c);
     }
@@ -72,7 +75,7 @@ public class ArrayList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean addAll(ICollection<? extends E> c) {
         return addAll(size, c);
     }
 
@@ -81,7 +84,7 @@ public class ArrayList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean addAll(int index, Collection<? extends E> c) {
+    public boolean addAll(int index, ICollection<? extends E> c) {
         if ((index < 0) || (index > size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
         }
@@ -183,7 +186,7 @@ public class ArrayList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(ICollection<?> c) {
         Objects.requireNonNull(c);
         for (var o : c) {
             if (!contains(o)) {
@@ -231,7 +234,7 @@ public class ArrayList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(ICollection<?> c) {
         Objects.requireNonNull(c);
 
         if (c.isEmpty() || isEmpty()) {
@@ -285,7 +288,7 @@ public class ArrayList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(ICollection<?> c) {
         Objects.requireNonNull(c);
 
         var sizeBefore = size;
@@ -433,26 +436,11 @@ public class ArrayList<E> implements List<E> {
         return Arrays.copyOf(container, size);
     }
 
-    @Override
-    public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ListIterator<E> listIterator() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ListIterator<E> listIterator(int index) {
-        throw new UnsupportedOperationException();
-    }
-
     /*
      * Time Complexity = O(n)
      */
     @Override
-    public List<E> subList(int fromIndex, int toIndex) {
+    public IList<E> subList(int fromIndex, int toIndex) {
         if (fromIndex < 0) {
             throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
         }
@@ -465,7 +453,7 @@ public class ArrayList<E> implements List<E> {
             throw new IllegalArgumentException("fromIndex(%d) > toIndex(%d)".formatted(fromIndex, toIndex));
         }
 
-        var subList = new CircularSinglyLinkedList<E>();
+        var subList = new ArrayList<E>();
 
         if (fromIndex == toIndex) {
             return subList;
@@ -502,7 +490,7 @@ public class ArrayList<E> implements List<E> {
             return true;
         }
 
-        if (!(other instanceof List<?> otherList) || (this.size() != otherList.size())) {
+        if (!(other instanceof IList<?> otherList) || (this.size() != otherList.size())) {
             return false;
         }
 

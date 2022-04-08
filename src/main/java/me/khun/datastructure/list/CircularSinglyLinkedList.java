@@ -1,9 +1,12 @@
 package me.khun.datastructure.list;
 
+import me.khun.datastructure.adt.ICollection;
+import me.khun.datastructure.adt.IList;
+
 import java.util.*;
 import java.util.function.Predicate;
 
-public class CircularSinglyLinkedList<E> implements List<E> {
+public class CircularSinglyLinkedList<E> implements IList<E> {
 
     private static class Node<T> {
         T value;
@@ -29,7 +32,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         this.modificationCount = 0;
     }
 
-    public CircularSinglyLinkedList(Collection<? extends E> c) {
+    public CircularSinglyLinkedList(ICollection<? extends E> c) {
         this();
         addAll(c);
     }
@@ -80,7 +83,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
      * m = size if c
      */
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean addAll(ICollection<? extends E> c) {
         return addAll(size, c);
     }
 
@@ -89,7 +92,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean addAll(int index, Collection<? extends E> c) {
+    public boolean addAll(int index, ICollection<? extends E> c) {
         if ((index < 0) || (index > size)) {
             throw new IndexOutOfBoundsException("Index out of bounds : " + index);
         }
@@ -232,7 +235,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(ICollection<?> c) {
         Objects.requireNonNull(c);
 
         if (c.isEmpty() || isEmpty()) {
@@ -303,7 +306,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(ICollection<?> c) {
         Objects.requireNonNull(c);
         var sizeBefore = size;
         if (c.isEmpty()) {
@@ -358,7 +361,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
      * m = size of c
      */
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(ICollection<?> c) {
         Objects.requireNonNull(c);
 
         if (isEmpty()) {
@@ -507,26 +510,11 @@ public class CircularSinglyLinkedList<E> implements List<E> {
         return array;
     }
 
-    @Override
-    public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ListIterator<E> listIterator() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ListIterator<E> listIterator(int index) {
-        throw new UnsupportedOperationException();
-    }
-
     /*
      * Time Complexity = O(n)
      */
     @Override
-    public List<E> subList(int fromIndex, int toIndex) {
+    public IList<E> subList(int fromIndex, int toIndex) {
         if (fromIndex < 0) {
             throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
         }
@@ -580,7 +568,7 @@ public class CircularSinglyLinkedList<E> implements List<E> {
             return true;
         }
 
-        if (!(other instanceof List<?> otherList) || (this.size() != otherList.size())) {
+        if (!(other instanceof IList<?> otherList) || (this.size() != otherList.size())) {
             return false;
         }
 

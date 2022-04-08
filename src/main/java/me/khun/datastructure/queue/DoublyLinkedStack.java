@@ -1,14 +1,14 @@
 package me.khun.datastructure.queue;
 
+import me.khun.datastructure.adt.IList;
 import me.khun.datastructure.list.DoublyLinkedList;
 
 import java.util.EmptyStackException;
-import java.util.List;
 import java.util.Objects;
 
 public class DoublyLinkedStack<E> {
 
-    private final List<E> CONTAINER;
+    private final IList<E> CONTAINER;
 
     public DoublyLinkedStack() {
         CONTAINER = new DoublyLinkedList<>();
@@ -72,6 +72,13 @@ public class DoublyLinkedStack<E> {
      */
     public int size() {
         return CONTAINER.size();
+    }
+
+    /*
+     * Time Complexity = O(n)
+     */
+    public Object[] toArray() {
+        return CONTAINER.toArray();
     }
 
     @Override

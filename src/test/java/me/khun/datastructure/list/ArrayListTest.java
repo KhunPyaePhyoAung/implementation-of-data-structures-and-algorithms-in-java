@@ -1,42 +1,94 @@
 package me.khun.datastructure.list;
 
+import me.khun.datastructure.adt.IList;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ArrayListTest {
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class ArrayListTest extends ListTest {
 
     @Test
     public void testDefaultConstructor() {
-        var list = new ArrayList<Integer>();
+        var list = new ArrayList<>();
         list.add(-5);
         list.add(-4);
         list.add(-3);
         list.add(-2);
         list.add(-1);
-        assertEquals("[-5, -4, -3, -2, -1]", list.toString());
-    }
-
-    @Test
-    public void testConstructorWithInitialCapacityOfZero() {
-        var list = new ArrayList<Integer>(0);
-        list.add(6);
-        list.add(7);
-        list.add(8);
-        list.add(9);
-        list.add(10);
-        assertEquals("[6, 7, 8, 9, 10]", list.toString());
+        assertArrayEquals(new Integer[]{-5, -4, -3, -2, -1}, list.toArray());
     }
 
     @Test
     public void testConstructorWithInitialCapacity() {
         var list = new ArrayList<Integer>(5);
-        list.add(0);
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        list.add(4);
-        list.add(5);
-        assertEquals("[0, 1, 2, 3, 4, 5]", list.toString());
+        list.add(-5);
+        list.add(-4);
+        list.add(-3);
+        list.add(-2);
+        list.add(-1);
+        assertArrayEquals(new Integer[]{-5, -4, -3, -2, -1}, list.toArray());
+    }
+
+    @Test
+    public void shouldThrowIllegalArgumentExceptionWhenPassingInitialCapacityLessThanZeroToConstructor() {
+        assertThrows(IllegalArgumentException.class, () -> new ArrayList<>(-1));
+    }
+
+    @Test
+    public void shouldThrowOutOfMemoryErrorWhenAddMethodIsInvoked() {
+        var list = new ArrayList<>();
+        assertThrows(OutOfMemoryError.class, () -> {
+            while (true) {
+                list.add(1);
+            }
+        });
+    }
+
+    @Test
+    public void shouldThrowOutOfMemoryErrorWhenAddAtIndexMethodIsInvoked() {
+        var list = new ArrayList<>();
+        assertThrows(OutOfMemoryError.class, () -> {
+            while (true) {
+                list.add(list.size(), 1);
+            }
+        });
+    }
+
+    @Test
+    public void shouldThrowOutOfMemoryErrorWhenAddAtAllMethodIsInvoked() {
+        var list1 = new ArrayList<>();
+
+        var list2 = new ArrayList<>();
+        list2.add(1);
+        list2.add(1);
+        list2.add(1);
+        list2.add(1);
+        list2.add(1);
+
+        assertThrows(OutOfMemoryError.class, () -> {
+            while (true) {
+                list1.addAll(list2);
+            }
+        });
+    }
+
+    @Test
+    public void shouldThrowOutOfMemoryErrorWhenAddAtAllAtIndexMethodIsInvoked() {
+        var list1 = new ArrayList<>();
+
+        var list2 = new ArrayList<>();
+        list2.add(1);
+        list2.add(1);
+        list2.add(1);
+        list2.add(1);
+        list2.add(1);
+
+        assertThrows(OutOfMemoryError.class, () -> {
+            while (true) {
+                list1.addAll(list1.size(), list2);
+            }
+        });
     }
 
     @Test
@@ -47,20 +99,25 @@ public class ArrayListTest {
         list1.add(-3);
         list1.add(-2);
         list1.add(-1);
-        assertEquals("[-5, -4, -3, -2, -1]", list1.toString());
 
-        var list2 = new ArrayList<Integer>(5);
+        var list2 = new ArrayList<>(list1);
         list2.add(0);
         list2.add(1);
         list2.add(2);
         list2.add(3);
         list2.add(4);
         list2.add(5);
-        assertEquals("[0, 1, 2, 3, 4, 5]", list2.toString());
 
-        var list3 = new ArrayList<>(list1);
-        list3.addAll(list2);
+        assertArrayEquals(new Integer[]{-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5}, list2.toArray());
+    }
 
-        assertEquals("[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]", list3.toString());
+    @Test
+    public void shouldThrowNullPointerExceptionWhenPassingNullToConstructorWithCollection() {
+        assertThrows(NullPointerException.class, () -> new ArrayList<>(null));
+    }
+
+    @Override
+    protected <T> IList<T> createList(Class<T> type) {
+        return new ArrayList<>();
     }
 }

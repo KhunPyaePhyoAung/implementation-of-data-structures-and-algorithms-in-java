@@ -1,254 +1,220 @@
 package me.khun.datastructure.queue;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.EmptyStackException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StackTest {
 
-    private DoublyLinkedStack<Integer> stack0;
-    private DoublyLinkedStack<Integer> stack1;
-
-    @BeforeEach
-    public void setupStack() {
-        stack0 = new DoublyLinkedStack<>();
-
-        stack1 = new DoublyLinkedStack<>();
-        stack1.push(0);
-        stack1.push(1);
-        stack1.push(2);
-        stack1.push(0);
-        stack1.push(1);
-        stack1.push(2);
-        stack1.push(3);
-        stack1.push(4);
-        stack1.push(5);
-    }
-
     @Test
     public void testPushMethod() {
-        assertEquals(6, stack1.push(6));
-        assertEquals(7, stack1.push(7));
-        assertEquals(8, stack1.push(8));
-        assertEquals(9, stack1.push(9));
-        assertEquals(10, stack1.push(10));
-        assertEquals("[0, 1, 2, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", stack1.toString());
+        var stack = createStack(Integer.class);
+        assertNull(stack.push(null));
+        assertEquals(1, stack.push(1));
+        assertEquals(2, stack.push(2));
+        assertArrayEquals(new Integer[]{null, 1, 2}, stack.toArray());
     }
 
     @Test
     public void testPopMethod() {
-        assertEquals(5, stack1.pop());
-        assertEquals(4, stack1.pop());
-        assertEquals(3, stack1.pop());
-        assertEquals(2, stack1.pop());
-        assertEquals(1, stack1.pop());
-        assertEquals(0, stack1.pop());
-        assertEquals("[0, 1, 2]", stack1.toString());
+        var stack = createStack(Integer.class);
+        stack.push(null);
+        stack.push(1);
+        stack.push(2);
 
-        assertEquals(2, stack1.pop());
-        assertEquals(1, stack1.pop());
-        assertEquals(0, stack1.pop());
-        assertEquals("[]", stack1.toString());
+        assertEquals(2, stack.pop());
+        assertEquals(1, stack.pop());
+        assertNull(stack.pop());
+        assertArrayEquals(new Integer[0], stack.toArray());
     }
 
     @Test
-    public void testPopMethodException() {
-        assertThrows(EmptyStackException.class, stack0::pop);
+    public void shouldThrowEmptyStackExceptionWhenPoppingFromEmptyStack() {
+        var stack = createStack(Integer.class);
+        assertThrows(EmptyStackException.class, stack::pop);
     }
 
     @Test
     public void testPeekMethod() {
-        assertEquals(5, stack1.peek());
-        assertEquals(5, stack1.pop());
-        assertEquals(4, stack1.peek());
-        assertEquals(4, stack1.pop());
-        assertEquals(3, stack1.peek());
-        assertEquals(3, stack1.pop());
-        assertEquals(2, stack1.peek());
-        assertEquals(2, stack1.pop());
-        assertEquals(1, stack1.peek());
-        assertEquals(1, stack1.pop());
-        assertEquals(0, stack1.peek());
-        assertEquals(0, stack1.pop());
-        assertEquals(2, stack1.peek());
-        assertEquals(2, stack1.pop());
-        assertEquals(1, stack1.peek());
-        assertEquals(1, stack1.pop());
-        assertEquals(0, stack1.peek());
-        assertEquals(0, stack1.pop());
+        var stack = createStack(Integer.class);
+
+        stack.push(null);
+        assertNull(stack.peek());
+
+        stack.push(1);
+        assertEquals(1, stack.peek());
+
+        stack.push(2);
+        assertEquals(2, stack.peek());
     }
 
     @Test
-    public void testPeekMethodException() {
-        assertThrows(EmptyStackException.class, stack0::peek);
-        testPeekMethod();
-        assertThrows(EmptyStackException.class, stack1::peek);
+    public void shouldThrowEmptyStackExceptionWhenPeekingFromEmptyStack() {
+        var stack = createStack(Integer.class);
+        assertThrows(EmptyStackException.class, stack::peek);
     }
 
     @Test
     public void testSearchMethod() {
-        assertEquals(-1, stack0.search(0));
-        assertEquals(-1, stack0.search(1));
-        assertEquals(-1, stack0.search(2));
+        var stack = createStack(Integer.class);
+        stack.push(null);
+        stack.push(1);
+        stack.push(2);
 
-        assertEquals(1, stack1.search(5));
-        assertEquals(2, stack1.search(4));
-        assertEquals(3, stack1.search(3));
-        assertEquals(4, stack1.search(2));
-        assertEquals(5, stack1.search(1));
-        assertEquals(6, stack1.search(0));
-        assertEquals(4, stack1.search(2));
-        assertEquals(5, stack1.search(1));
-        assertEquals(6, stack1.search(0));
-        assertEquals(-1, stack1.search(-1));
-        assertEquals(-1, stack1.search(11));
+        assertEquals(-1, stack.search(0));
+        assertEquals(-1, stack.search(3));
+        assertEquals(-1, stack.search(4));
+
+        assertEquals(1, stack.search(2));
+        assertEquals(2, stack.search(1));
+        assertEquals(3, stack.search(null));
     }
 
     @Test
     public void testClearMethod() {
-        assertEquals("[]", stack0.toString());
-        stack0.clear();
-        assertEquals("[]", stack0.toString());
+        var stack = createStack(Integer.class);
+        stack.clear();
+        assertArrayEquals(new Integer[0], stack.toArray());
 
-        assertEquals("[0, 1, 2, 0, 1, 2, 3, 4, 5]", stack1.toString());
-        stack1.clear();
-        assertEquals("[]", stack1.toString());
+        stack.push(null);
+        stack.push(1);
+        stack.push(2);
+        assertArrayEquals(new Integer[]{null, 1, 2}, stack.toArray());
+        stack.clear();
+        assertArrayEquals(new Integer[0], stack.toArray());
     }
 
     @Test
     public void testSizeMethod() {
-        assertEquals(0, stack0.size());
+        var stack = createStack(Integer.class);
 
-        stack0.push(1);
-        assertEquals(1, stack0.size());
+        assertEquals(0, stack.size());
 
-        assertEquals(9, stack1.size());
+        stack.push(null);
+        assertEquals(1, stack.size());
 
-        stack1.pop();
-        assertEquals(8, stack1.size());
-
-        stack1.clear();
-        assertEquals(0, stack1.size());
+        stack.push(1);
+        stack.push(2);
+        assertEquals(3, stack.size());
     }
 
     @Test
     public void testIsEmptyMethod() {
-        assertTrue(stack0.isEmpty());
+        var stack = createStack(Integer.class);
 
-        stack0.push(1);
-        assertFalse(stack0.isEmpty());
+        assertTrue(stack.isEmpty());
 
-        assertFalse(stack1.isEmpty());
+        stack.push(1);
+        assertFalse(stack.isEmpty());
+    }
 
-        stack1.clear();
-        assertTrue(stack1.isEmpty());
+    @Test
+    public void testToStringMethod() {
+        var stack = createStack(Integer.class);
+
+        assertEquals("[]", stack.toString());
+
+        stack.push(null);
+        stack.push(1);
+        stack.push(2);
+        assertEquals("[null, 1, 2]", stack.toString());
     }
 
     @Test
     public void testEqualsMethodForEquals() {
-        assertEquals(new DoublyLinkedStack<String>(), stack0);
-        assertEquals(new DoublyLinkedStack<Short>(), stack0);
-        assertEquals(new DoublyLinkedStack<Long>(), stack0);
-        assertEquals(new DoublyLinkedStack<Double>(), stack0);
-        assertEquals(stack0, stack0);
+        var stack1 = createStack(Integer.class);
 
-        stack0.push(0);
-        stack0.push(1);
-        stack0.push(2);
-        stack0.push(0);
-        stack0.push(1);
-        stack0.push(2);
-        stack0.push(3);
-        stack0.push(4);
-        stack0.push(5);
+        assertEquals(new DoublyLinkedStack<String>(), stack1);
+        assertEquals(new DoublyLinkedStack<Short>(), stack1);
+        assertEquals(new DoublyLinkedStack<Long>(), stack1);
+        assertEquals(new DoublyLinkedStack<Double>(), stack1);
+        assertEquals(stack1, stack1);
 
-        assertEquals(stack0, stack1);
+        stack1.push(0);
+        stack1.push(1);
+        stack1.push(2);
+
+        var stack2 = createStack(Integer.class);
+        stack2.push(0);
+        stack2.push(1);
+        stack2.push(2);
+
+        assertEquals(stack1, stack2);
     }
 
     @Test
     public void testEqualsMethodForNotEquals() {
-        assertNotEquals(null, stack0);
+        var stack1 = createStack(Integer.class);
+
+        var stack2 = createStack(Integer.class);
+        stack2.push(null);
+        stack2.push(1);
+
         assertNotEquals(null, stack1);
-        assertNotEquals(stack0, stack1);
+        assertNotEquals(null, stack2);
+        assertNotEquals(stack1, stack2);
 
-        var s1 = new DoublyLinkedStack<Short>();
-        s1.push((short) 0);
-        s1.push((short) 1);
-        s1.push((short) 2);
-        s1.push((short) 0);
-        s1.push((short) 1);
-        s1.push((short) 2);
-        s1.push((short) 3);
-        s1.push((short) 4);
-        s1.push((short) 5);
+        var stack3 = createStack(Short.class);
+        stack3.push(null);
+        stack3.push((short) 1);
 
-        assertNotEquals(s1, stack1);
+        assertNotEquals(stack2, stack3);
     }
 
     @Test
     public void testHashCodeMethodForEquals() {
-        assertEquals(new DoublyLinkedStack<Integer>().hashCode(), stack0.hashCode());
-        assertEquals(new DoublyLinkedStack<String>().hashCode(), stack0.hashCode());
-        assertEquals(new DoublyLinkedStack<Short>().hashCode(), stack0.hashCode());
-        assertEquals(new DoublyLinkedStack<Long>().hashCode(), stack0.hashCode());
-        assertEquals(new DoublyLinkedStack<Double>().hashCode(), stack0.hashCode());
+        var stack1 = createStack(Integer.class);
 
-        var s1 = new DoublyLinkedStack<Short>();
-        s1.push((short) 0);
-        s1.push((short) 1);
-        s1.push((short) 2);
-        s1.push((short) 0);
-        s1.push((short) 1);
-        s1.push((short) 2);
-        s1.push((short) 3);
-        s1.push((short) 4);
-        s1.push((short) 5);
+        assertEquals(new DoublyLinkedStack<Integer>().hashCode(), stack1.hashCode());
+        assertEquals(new DoublyLinkedStack<String>().hashCode(), stack1.hashCode());
+        assertEquals(new DoublyLinkedStack<Short>().hashCode(), stack1.hashCode());
+        assertEquals(new DoublyLinkedStack<Long>().hashCode(), stack1.hashCode());
+        assertEquals(new DoublyLinkedStack<Double>().hashCode(), stack1.hashCode());
 
-        assertEquals(s1.hashCode(), stack1.hashCode());
+        stack1.push(null);
+        stack1.push(1);
+        stack1.push(2);
 
-        var s2 = new DoublyLinkedStack<Long>();
-        s2.push(0L);
-        s2.push(1L);
-        s2.push(2L);
-        s2.push(0L);
-        s2.push(1L);
-        s2.push(2L);
-        s2.push(3L);
-        s2.push(4L);
-        s2.push(5L);
+        var stack2 = createStack(Short.class);
+        stack2.push(null);
+        stack2.push((short) 1);
+        stack2.push((short) 2);
 
-        assertEquals(s1.hashCode(), stack1.hashCode());
+        assertEquals(stack1.hashCode(), stack2.hashCode());
+
+        var stack3 = createStack(Long.class);
+        stack3.push(null);
+        stack3.push(1L);
+        stack3.push(2L);
+        assertEquals(stack1.hashCode(), stack3.hashCode());
     }
 
     @Test
     public void testHashCodeMethodForNotEquals() {
-        assertNotEquals(stack0.hashCode(), stack1.hashCode());
+        var stack1 = createStack(Integer.class);
 
-        stack0.push(0);
-        stack0.push(1);
-        stack0.push(2);
-        stack0.push(3);
-        stack0.push(4);
-        stack0.push(5);
+        var stack2 = createStack(Integer.class);
+        stack2.push(null);
+        stack2.push(1);
 
-        assertNotEquals(stack0.hashCode(), stack1.hashCode());
+        assertNotEquals(stack1.hashCode(), stack2.hashCode());
 
-        var s1 = new DoublyLinkedStack<Integer>();
-        s1.push(-1);
-        s1.push(-2);
-        s1.push(-3);
-        s1.push(-4);
-        s1.push(-5);
+        stack1.push(-1);
+        stack1.push(-2);
+        stack1.push(-3);
 
-        var s2 = new DoublyLinkedStack<Long>();
-        s2.push(-1L);
-        s2.push(-2L);
-        s2.push(-3L);
-        s2.push(-4L);
-        s2.push(-5L);
+        var stack3 = createStack(Long.class);
+        stack3.push(-1L);
+        stack3.push(-2L);
+        stack3.push(-3L);
 
-        assertNotEquals(s2.hashCode(), stack1.hashCode());
+        assertNotEquals(stack1.hashCode(), stack3.hashCode());
     }
+
+    private <T> DoublyLinkedStack<T> createStack(Class<T> type) {
+        return new DoublyLinkedStack<>();
+    }
+
 }

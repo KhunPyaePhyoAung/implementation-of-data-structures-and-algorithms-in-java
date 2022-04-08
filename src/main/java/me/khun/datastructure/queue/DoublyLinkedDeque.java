@@ -1,18 +1,23 @@
 package me.khun.datastructure.queue;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
+import me.khun.datastructure.adt.ICollection;
+import me.khun.datastructure.adt.IDeque;
+import me.khun.datastructure.adt.IQueue;
+
 import java.util.NoSuchElementException;
 
-public class DoublyLinkedDeque<E> extends DoublyLinkedQueue<E> implements Deque<E> {
+public class DoublyLinkedDeque<E> extends DoublyLinkedQueue<E> implements IDeque<E> {
 
     public DoublyLinkedDeque() {
         super();
     }
 
-    public DoublyLinkedDeque(Collection<? extends E> c) {
+    public DoublyLinkedDeque(ICollection<? extends E> c) {
         super(c);
+    }
+
+    public DoublyLinkedDeque(IQueue<? extends E> q) {
+        super(q);
     }
 
     @Override
@@ -107,11 +112,6 @@ public class DoublyLinkedDeque<E> extends DoublyLinkedQueue<E> implements Deque<
     @Override
     public E pop() {
         return removeFirst();
-    }
-
-    @Override
-    public Iterator<E> descendingIterator() {
-        throw new UnsupportedOperationException();
     }
 
 }
