@@ -32,7 +32,7 @@ public abstract class LinearQueueTest {
     }
 
     @Test
-    public void shouldPollAndReturnTheFistElement() {
+    public void shouldPollAndReturnTheFirstElement() {
         var queue = createQueue(Integer.class);
         assertTrue(queue.offer(1));
         assertTrue(queue.offer(2));
@@ -99,7 +99,7 @@ public abstract class LinearQueueTest {
     }
 
     @Test
-    public void shouldReturnTheFirstElement() {
+    public void testPeekMethod() {
         var queue1 = createQueue(Integer.class);
         queue1.offer(null);
         queue1.offer(1);
@@ -347,10 +347,12 @@ public abstract class LinearQueueTest {
 
         var iterator = queue.iterator();
 
-        while (iterator.hasNext()) {
-            queue.remove(4);
-            iterator.next();
-        }
+        assertDoesNotThrow(() -> {
+            while (iterator.hasNext()) {
+                queue.remove(4);
+                iterator.next();
+            }
+        });
     }
 
     @Test
@@ -477,7 +479,7 @@ public abstract class LinearQueueTest {
 
         iterator.next();
         iterator.remove();
-        queue.remove();
+        queue.poll();
         assertThrows(IllegalStateException.class, iterator::remove);
     }
 
