@@ -11,3 +11,4 @@
 - [Doubly Linked Stack](https://github.com/KhunPyaePhyoAung/implementation-of-data-structures-and-algorithms-in-java/blob/master/src/main/java/me/khun/datastructure/queue/DoublyLinkedStack.java)
 - [Doubly Linked Queue](https://github.com/KhunPyaePhyoAung/implementation-of-data-structures-and-algorithms-in-java/blob/master/src/main/java/me/khun/datastructure/queue/DoublyLinkedQueue.java)
 - [Doubly Linked Deque](https://github.com/KhunPyaePhyoAung/implementation-of-data-structures-and-algorithms-in-java/blob/master/src/main/java/me/khun/datastructure/queue/DoublyLinkedDeque.java)
+- [Binary Heap Priority Queue](https://github.com/KhunPyaePhyoAung/implementation-of-data-structures-and-algorithms-in-java/blob/master/src/main/java/me/khun/datastructure/queue/BinaryHeapPriorityQueue.java)
